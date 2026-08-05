@@ -1,0 +1,19 @@
+# Sauvegardes et fichiers temporaires
+*.bak
+*~
+*.swp
+.DS_Store
+Thumbs.db
+
+# Python (générateurs)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Éditeurs
+.idea/
+.vscode/
+
+# Configuration locale d'instance (si vous en créez une)
+config.local.php

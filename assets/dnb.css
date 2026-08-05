@@ -1,0 +1,98 @@
+/*
+ * Habillage minimal des pages du générateur.
+ * Volontairement sobre et sans dépendance externe (aucune police distante,
+ * aucun CDN) : remplacez-le par votre propre feuille de style si vous
+ * intégrez le générateur à un site existant.
+ */
+
+body {
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+    max-width: 1200px;
+    background-color: #efeae2;
+    color: #222;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+}
+
+h1#titre {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.9rem;
+    text-align: center;
+    margin: 0 0 1.5rem;
+    color: #2c3e50;
+}
+
+a { color: #005ea2; }
+
+/* Fil d'Ariane */
+.breadcrumb {
+    padding: 0 .5rem;
+    font-size: .95rem;
+    font-style: italic;
+    margin: .5rem 0 1rem;
+}
+.breadcrumb ul {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: .1rem;
+}
+.breadcrumb a {
+    color: #c0392b;
+    text-decoration: none;
+}
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb li:not(:last-child)::after {
+    display: inline-block;
+    margin: 0 .3rem;
+    content: "\203A";
+    color: #444;
+}
+.breadcrumb li:last-child,
+.breadcrumb li:last-child span { font-weight: 700; color: #444; }
+
+/* Bloc « notes de version » en bas de page */
+.remarques {
+    background-color: #f9f9f9;
+    border-top: 1px solid #ccc;
+    padding: 1.5em;
+    font-size: .9em;
+    color: #444;
+    line-height: 1.5;
+    margin-top: 2em;
+}
+.remarques-title {
+    font-family: 'Courier New', monospace;
+    font-size: 1.1em;
+    background-color: #1e1e1e;
+    color: #00ffcc;
+    padding: .5em .8em;
+    border-radius: 4px;
+    display: inline-block;
+    margin-top: 0;
+}
+.remarques ul {
+    list-style: none;
+    padding-left: 1.2em;
+    font-family: 'Courier New', monospace;
+}
+.remarques ul li::before {
+    content: "\25B8 ";
+    color: #0070ba;
+    margin-right: .3em;
+}
+.remarques ul ul li::before {
+    content: "// ";
+    color: #555;
+}
+
+#footer {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: .85rem;
+    color: #666;
+}

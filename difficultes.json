@@ -1,0 +1,188 @@
+{
+  "description": "Configuration centralisée des difficultés pour tous les automatismes DNB",
+  "echelle": {
+    "0.5-1.0": "Très facile (reconnaissance, VRAI/FAUX avec 50% au hasard)",
+    "1.0-1.5": "Facile (calculs simples, petits nombres)",
+    "1.5-2.0": "Moyen (calculs avec nombres moyens)",
+    "2.0-3.0": "Difficile (grands nombres, décimaux, multi-étapes)"
+  },
+  
+  "automatismes": {
+    "thales": {
+      "description": "Théorème de Thalès",
+      "types": {
+        "vrai_faux": {
+          "description": "Questions réciproque/contraposée (sont-elles parallèles ?)",
+          "difficulte": 0.8,
+          "justification": "50% de chance au hasard, pas de calcul"
+        },
+        "calcul_facile": {
+          "description": "Calcul avec petits nombres entiers (≤ 12)",
+          "difficulte": 1.2,
+          "justification": "Produit en croix simple, petits nombres"
+        },
+        "calcul_moyen": {
+          "description": "Calcul avec nombres moyens (12-20) ou quelques décimaux",
+          "difficulte": 1.6,
+          "justification": "Produit en croix, nombres moyens"
+        },
+        "calcul_difficile": {
+          "description": "Grands nombres (>20) ou plusieurs décimaux",
+          "difficulte": 2.0,
+          "justification": "Calculs plus complexes"
+        }
+      }
+    },
+    
+    "pythagore": {
+      "description": "Théorème de Pythagore",
+      "types": {
+        "hypotenuse_facile": {
+          "description": "Calculer hypoténuse avec petits nombres",
+          "difficulte": 1.2
+        },
+        "hypotenuse_moyen": {
+          "description": "Calculer hypoténuse avec nombres moyens",
+          "difficulte": 1.6
+        },
+        "cote_facile": {
+          "description": "Calculer un côté avec petits nombres",
+          "difficulte": 1.4
+        },
+        "cote_moyen": {
+          "description": "Calculer un côté avec nombres moyens",
+          "difficulte": 1.8
+        }
+      }
+    },
+    
+    "cosinus": {
+      "description": "Cosinus dans le triangle rectangle",
+      "types": {
+        "calculer_angle": {
+          "description": "Calculer un angle avec cos⁻¹",
+          "difficulte": 1.8
+        },
+        "calculer_longueur": {
+          "description": "Calculer une longueur avec cos",
+          "difficulte": 1.6
+        }
+      }
+    },
+    
+    "fractions": {
+      "description": "Opérations sur les fractions",
+      "types": {
+        "addition_denominateur_commun": {
+          "description": "Addition avec même dénominateur",
+          "difficulte": 1.0
+        },
+        "addition_denominateur_different": {
+          "description": "Addition avec dénominateurs différents",
+          "difficulte": 1.5
+        },
+        "multiplication": {
+          "description": "Multiplication de fractions",
+          "difficulte": 1.2
+        }
+      }
+    },
+    
+    "equations": {
+      "description": "Équations du premier degré",
+      "types": {
+        "forme_x_plus_a_egal_b": {
+          "description": "x + a = b",
+          "difficulte": 1.0
+        },
+        "forme_ax_egal_b": {
+          "description": "ax = b",
+          "difficulte": 1.2
+        },
+        "forme_ax_plus_b_egal_c": {
+          "description": "ax + b = c",
+          "difficulte": 1.5
+        }
+      }
+    },
+    
+    "probabilites": {
+      "description": "Calcul de probabilités",
+      "types": {
+        "simple": {
+          "description": "Probabilité simple (dé, pièce)",
+          "difficulte": 1.0
+        },
+        "urne_simple": {
+          "description": "Urne avec une couleur",
+          "difficulte": 1.3
+        },
+        "evenement_contraire": {
+          "description": "Événement contraire",
+          "difficulte": 1.6
+        }
+      }
+    },
+    
+    "notation_scientifique": {
+      "description": "Notation scientifique et écriture décimale",
+      "types": {
+        "decimal_vers_scientifique_grand_1": {
+          "description": "Décimal → scientifique, ordre 10³ (milliers)",
+          "difficulte": 1.2
+        },
+        "decimal_vers_scientifique_grand_2": {
+          "description": "Décimal → scientifique, ordre 10⁴ (dizaines de milliers)",
+          "difficulte": 1.4
+        },
+        "decimal_vers_scientifique_grand_3": {
+          "description": "Décimal → scientifique, ordre 10⁶ (millions)",
+          "difficulte": 1.6
+        },
+        "decimal_vers_scientifique_grand_4": {
+          "description": "Décimal → scientifique, ordre 10⁵ (centaines de milliers)",
+          "difficulte": 1.5
+        },
+        "decimal_vers_scientifique_petit_1": {
+          "description": "Décimal → scientifique, ordre 10⁻² (centièmes)",
+          "difficulte": 1.3
+        },
+        "decimal_vers_scientifique_petit_2": {
+          "description": "Décimal → scientifique, ordre 10⁻⁴ (dix-millièmes)",
+          "difficulte": 1.5
+        },
+        "decimal_vers_scientifique_petit_3": {
+          "description": "Décimal → scientifique, ordre 10⁻⁶ (millionièmes)",
+          "difficulte": 1.8
+        },
+        "decimal_vers_scientifique_petit_4": {
+          "description": "Décimal → scientifique, ordre 10⁻³ (millièmes)",
+          "difficulte": 1.4
+        },
+        "scientifique_vers_decimal_grand_1": {
+          "description": "Scientifique → décimal, ordre 10³",
+          "difficulte": 1.1
+        },
+        "scientifique_vers_decimal_grand_2": {
+          "description": "Scientifique → décimal, ordre 10⁵",
+          "difficulte": 1.5
+        },
+        "scientifique_vers_decimal_petit_1": {
+          "description": "Scientifique → décimal, ordre 10⁻²",
+          "difficulte": 1.2
+        },
+        "scientifique_vers_decimal_petit_2": {
+          "description": "Scientifique → décimal, ordre 10⁻⁴",
+          "difficulte": 1.6
+        }
+      }
+    }
+  },
+  
+  "notes": [
+    "Les difficultés doivent permettre un tri cohérent : 6 premières questions (0.5pt) vs 3 dernières (1pt)",
+    "Privilégier des valeurs entre 0.8 et 2.5 pour une bonne distribution",
+    "Éviter trop de questions à difficulté identique pour un meilleur étalement",
+    "IMPORTANT : Les scripts PHP doivent lire les difficultés depuis ce JSON plutôt que de les avoir en dur dans le code. Cela permet de gérer toutes les difficultés de manière centralisée et de les ajuster facilement sans modifier les générateurs."
+  ]
+}
