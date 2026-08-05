@@ -1,4 +1,5 @@
 # Questions Flash DNB — générateur d'automatismes
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21810165.svg)](https://doi.org/10.5281/zenodo.21810165)
 
 Générateur d'**automatismes de mathématiques pour le DNB** (Diplôme national du brevet,
 séries générale et professionnelle), conforme au format de l'épreuve :
