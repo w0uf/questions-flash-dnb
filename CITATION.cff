@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "Si vous utilisez ce logiciel, merci de le citer comme indiqué ci-dessous."
+title: "Questions Flash DNB"
+type: software
+version: 1.2.1
+date-released: 2026-08-05
+authors:
+  - family-names: "Petitprez"
+    given-names: "Laurent"
+license: AGPL-3.0
+abstract: >-
+  Générateur libre d'automatismes de Mathématiques pour le DNB.
+  L'application permet de composer des sessions interactives de neuf
+  questions en vingt minutes et des fiches imprimables avec corrigé.
+keywords:
+  - mathématiques
+  - éducation
+  - DNB
+  - automatismes
+  - questions flash
+  - collège
+  - exerciseur
+repository-code: "https://github.com/w0uf/questions-flash-dnb"
+url: "https://site2wouf.fr/questions_flash_dnb.php"
