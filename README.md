@@ -38,7 +38,7 @@ Aucune dépendance : ni base de données, ni bibliothèque tierce, ni compte, ni
 Il suffit d'un PHP 8 avec les sessions activées.
 
 ```bash
-git clone <url-du-depot> questions-flash-dnb
+git clone https://github.com/w0uf/questions-flash-dnb.git
 cd questions-flash-dnb
 php -S localhost:8000
 ```
