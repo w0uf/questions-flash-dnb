@@ -16,7 +16,22 @@ sont disponibles, répartis en 5 thèmes (nombres et calculs, espace et géomét
 probabilités et statistiques, proportionnalité et fonctions, algorithmique).
 
 Version en production : <https://site2wouf.fr/questions_flash_dnb.php>
+## Aperçu
 
+### Sélection et impression
+
+![Sélection des automatismes et accès à l’impression](capture_impression.png)
+
+### Session interactive
+
+![Question affichée pendant une session interactive](capture-session.png)
+
+### Fiche imprimable et corrigé
+
+<p align="center">
+  <img src="capture_fiche_1.png" alt="Première page de la fiche imprimable" width="49%">
+  <img src="capture_fiche_2.png" alt="Corrigé de la fiche imprimable" width="49%">
+</p>
 ## Installation
 
 Aucune dépendance : ni base de données, ni bibliothèque tierce, ni compte, ni clé d'API.
