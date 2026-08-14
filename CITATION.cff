@@ -8,6 +8,7 @@ doi: 10.5281/zenodo.21810165
 authors:
   - family-names: "Petitprez"
     given-names: "Laurent"
+    orcid: "https://orcid.org/0009-0000-1316-4483"
 license: AGPL-3.0
 abstract: >-
   Générateur libre d'automatismes de Mathématiques pour le DNB.
