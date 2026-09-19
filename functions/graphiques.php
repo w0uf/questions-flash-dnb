@@ -3,7 +3,18 @@
  * Automatisme DNB 2026 : Lire et interpréter tableaux, diagrammes et graphiques
  */
 
-function generer_graphiques() {
+function generer_graphiques($famille = '') {
+    // Filtre optionnel de famille pour une page hôte, traité avant le pool
+    // historique : l'appel sans argument (session DNB) est inchangé.
+    if (in_array($famille, ['barres', 'tableau', 'circulaire', 'courbe'], true)) {
+        switch ($famille) {
+            case 'barres':     return graph_barres(null);
+            case 'tableau':    return graph_tableau(null);
+            case 'circulaire': return graph_circulaire(null);
+            case 'courbe':     return graph_courbe(null);
+        }
+    }
+
     if (!isset($_SESSION['graphiques_pool']) || empty($_SESSION['graphiques_pool'])) {
         // ÉTAPE 1 : Tirer au sort barres OU courbe pour chaque contexte temporel
         $contextes_temporels = ['livres', 'ventes', 'temperatures', 'visiteurs'];
@@ -179,12 +190,7 @@ function graph_barres($contexte_impose = null) {
             
         case 'ordre_croissant':
             $critere = $question_data['critere'];
-            $mots = explode(' ', $critere);
-            $dernier_mot = end($mots);
-            $exceptions_masculin = ['nombre', 'pluie'];
-            $feminin = (substr($dernier_mot, -1) == 'e' && !in_array($dernier_mot, $exceptions_masculin)) || 
-                       (substr($dernier_mot, -1) == 's' && substr($dernier_mot, -2, 1) == 'e');
-            $accord = $feminin ? 'croissante' : 'croissant';
+            $accord = graph_accord($critere, 'croissant');
             $q .= '<p><strong>Classe ces ' . $question_data['nom'] . ' par ordre de ' . $critere . ' ' . $accord . '.</strong></p>';
             asort($donnees);
             $ordre = array_keys($donnees);
@@ -194,12 +200,7 @@ function graph_barres($contexte_impose = null) {
             
         case 'ordre_decroissant':
             $critere = $question_data['critere'];
-            $mots = explode(' ', $critere);
-            $dernier_mot = end($mots);
-            $exceptions_masculin = ['nombre', 'pluie'];
-            $feminin = (substr($dernier_mot, -1) == 'e' && !in_array($dernier_mot, $exceptions_masculin)) || 
-                       (substr($dernier_mot, -1) == 's' && substr($dernier_mot, -2, 1) == 'e');
-            $accord = $feminin ? 'décroissante' : 'décroissant';
+            $accord = graph_accord($critere, 'décroissant');
             $q .= '<p><strong>Classe ces ' . $question_data['nom'] . ' par ordre de ' . $critere . ' ' . $accord . '.</strong></p>';
             arsort($donnees);
             $ordre = array_keys($donnees);
@@ -264,7 +265,7 @@ function svg_barres($donnees, $titre) {
     
     $couleurs = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#ffa07a', '#98d8c8'];
     
-    $svg = '<svg width="' . $largeur . '" height="' . $hauteur . '" xmlns="http://www.w3.org/2000/svg" style="display: block; margin: 20px auto;">';
+    $svg = '<svg viewBox="0 0 ' . $largeur . ' ' . $hauteur . '" width="' . $largeur . '" height="' . $hauteur . '" xmlns="http://www.w3.org/2000/svg" style="display: block; margin: 20px auto; max-width:100%; height:auto;">';
     
     // Axes
     $svg .= '<line x1="' . $marge_gauche . '" y1="' . $marge_haut . '" x2="' . $marge_gauche . '" y2="' . ($hauteur - $marge_bas) . '" stroke="#333" stroke-width="2"/>';
@@ -608,7 +609,7 @@ function svg_circulaire($categories, $pourcentages) {
     
     $couleurs = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#ffa07a', '#98d8c8'];
     
-    $svg = '<svg width="' . $largeur . '" height="' . $hauteur . '" xmlns="http://www.w3.org/2000/svg" style="display: block; margin: 20px auto;">';
+    $svg = '<svg viewBox="0 0 ' . $largeur . ' ' . $hauteur . '" width="' . $largeur . '" height="' . $hauteur . '" xmlns="http://www.w3.org/2000/svg" style="display: block; margin: 20px auto; max-width:100%; height:auto;">';
     
     $angle_depart = -90;
     
@@ -833,7 +834,7 @@ function svg_courbe($donnees, $titre, $unite) {
     $max = max(array_values($donnees));
     $echelle_max = ceil($max / 5) * 5;
     
-    $svg = '<svg width="' . $largeur . '" height="' . $hauteur . '" xmlns="http://www.w3.org/2000/svg" style="display: block; margin: 20px auto;">';
+    $svg = '<svg viewBox="0 0 ' . $largeur . ' ' . $hauteur . '" width="' . $largeur . '" height="' . $hauteur . '" xmlns="http://www.w3.org/2000/svg" style="display: block; margin: 20px auto; max-width:100%; height:auto;">';
     
     // Grille horizontale légère
     for ($i = 0; $i <= 4; $i++) {
@@ -889,4 +890,26 @@ function svg_courbe($donnees, $titre, $unite) {
     $svg .= '</svg>';
     return $svg;
 }
+
+/**
+ * Accord de « croissant / décroissante » avec le critère de classement.
+ * L'accord se fait sur le nom NOYAU, c'est-à-dire le PREMIER mot du critère —
+ * et non sur le dernier, comme le faisait la version d'origine : « nombre de
+ * livres » regardait « livres » et produisait « par ordre de nombre de livres
+ * croissante ».
+ */
+function graph_accord($critere, $forme) {
+    $mots  = explode(' ', trim($critere));
+    $noyau = $mots[0];
+
+    // Pluriel : « ventes » → « par ordre de ventes croissantes »
+    $pluriel = (mb_substr($noyau, -1) === 's');
+    $base    = $pluriel ? mb_substr($noyau, 0, -1) : $noyau;
+
+    $masculin_en_e = ['nombre', 'groupe', 'type', 'chiffre', 'pourcentage', 'volume', 'effectif'];
+    $feminin = (mb_substr($base, -1) === 'e' && !in_array($base, $masculin_en_e, true));
+
+    return $forme . ($feminin ? 'e' : '') . ($pluriel ? 's' : '');
+}
+
 ?>

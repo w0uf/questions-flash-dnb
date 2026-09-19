@@ -1,14 +1,23 @@
 <?php
 /**
  * Automatisme : Médiane d'une série
- * Difficulté : FACILE pour 5 valeurs (1.5), MOYEN pour 7 valeurs (2.0)
+ * Difficulté : FACILE pour 5 valeurs (1.5), MOYEN pour 7 valeurs (2.0),
+ *              DIFFICILE pour un effectif pair (2.5) : il faut prendre la
+ *              demi-somme des deux valeurs centrales.
  */
 
 function generer_mediane() {
-    // 50% de chance d'avoir 5 ou 7 valeurs
-    $nb_valeurs = (rand(0, 1) == 0) ? 5 : 7;
-    $difficulte = ($nb_valeurs == 5) ? 1.5 : 2.0;
-    
+    // Effectif tiré dans un pool : autant de séries impaires (5, 7) que de
+    // séries paires (4, 6). Le cas pair est le point d'échec classique — il
+    // n'était pas généré avant août 2026.
+    if (!isset($_SESSION['mediane_effectifs']) || empty($_SESSION['mediane_effectifs'])) {
+        $_SESSION['mediane_effectifs'] = [5, 7, 5, 7, 4, 6, 4, 6];
+        shuffle($_SESSION['mediane_effectifs']);
+    }
+    $nb_valeurs = array_shift($_SESSION['mediane_effectifs']);
+    $pair       = ($nb_valeurs % 2 === 0);
+    $difficulte = $pair ? 2.5 : (($nb_valeurs == 5) ? 1.5 : 2.0);
+
     // Contextes variés avec narratifs cohérents
     $contextes = [
         [
@@ -65,8 +74,7 @@ function generer_mediane() {
             'phrases' => [
                 'Les prix de ' . $nb_valeurs . ' bandes dessinées à la librairie sont (en €) : <br>',
                 'Les tickets de cinéma dans ' . $nb_valeurs . ' villes coûtent (en €) : <br>',
-                'Les prix de ' . $nb_valeurs . ' jeux de société sont (en €)
-                '
+                'Les prix de ' . $nb_valeurs . ' jeux de société sont (en €) : <br>'
             ],
             'unite' => '€',
             'min' => 5,
@@ -136,24 +144,85 @@ function generer_mediane() {
         }
     }
 
-    // Calculer la médiane (série de taille impaire : valeur centrale)
+    // Calculer la médiane : valeur centrale si l'effectif est impair,
+    // demi-somme des deux valeurs centrales s'il est pair.
     $valeurs_triees = $valeurs;
     sort($valeurs_triees);
-    $mediane = $valeurs_triees[intval($nb_valeurs / 2)];
-    
+
+    if ($pair) {
+        $i_gauche = intval($nb_valeurs / 2) - 1;   // ex. 6 valeurs → rangs 3 et 4
+        $i_droite = intval($nb_valeurs / 2);
+        $v_gauche = $valeurs_triees[$i_gauche];
+        $v_droite = $valeurs_triees[$i_droite];
+        $mediane  = ($v_gauche + $v_droite) / 2;
+        $centrales = [$i_gauche, $i_droite];
+    } else {
+        $i_centre  = intval($nb_valeurs / 2);
+        $mediane   = $valeurs_triees[$i_centre];
+        $centrales = [$i_centre];
+    }
+
+    $unite = !empty($contexte['unite']) ? ' ' . $contexte['unite'] : '';
+
+    // Libellé de l'unité tel qu'il se lit dans la question (« en années »,
+    // pas « en ans ») : l'unité attendue doit figurer dans l'énoncé.
+    $unites_question = [
+        '°C'  => '°C',
+        'ans' => 'années',
+        'min' => 'minutes',
+        'kg'  => 'kg',
+        '€'   => '€',
+    ];
+    if (!isset($unites_question[$contexte['unite']])) {
+        $unites_question[$contexte['unite']] = $contexte['unite'];
+    }
+
     // Formater la liste de valeurs avec des séparateurs " ; "
     $liste_valeurs = implode(' ; ', $valeurs);
-    
-    // Construire la réponse avec l'unité si elle existe
-    $reponse_text = 'La médiane est <strong>' . $mediane . '</strong>';
-    if(!empty($contexte['unite'])) {
-        $reponse_text .= ' ' . $contexte['unite'];
+
+    // Série rangée dans l'ordre croissant, valeur(s) centrale(s) mises en avant :
+    // c'est l'étape que les élèves oublient le plus souvent.
+    $liste_triee = [];
+    foreach ($valeurs_triees as $i => $v) {
+        $liste_triee[] = in_array($i, $centrales, true)
+            ? '<strong style="color:#c0392b;">' . $v . '</strong>'
+            : $v;
     }
-    
+
+    $reponse  = '<p>On range d\'abord la série dans l\'ordre croissant :<br>'
+              . implode(' ; ', $liste_triee) . '</p>';
+    if ($pair) {
+        $reponse .= '<p>L\'effectif est <strong>pair</strong> (' . $nb_valeurs . ' valeurs) : '
+                  . 'la médiane est la demi-somme des deux valeurs centrales.<br>'
+                  . '(' . $v_gauche . ' + ' . $v_droite . ') &divide; 2 = '
+                  . med_formater_nombre($mediane) . '</p>';
+    } else {
+        $reponse .= '<p>L\'effectif est <strong>impair</strong> (' . $nb_valeurs . ' valeurs) : '
+                  . 'la médiane est la valeur du milieu, celle de rang '
+                  . (intval($nb_valeurs / 2) + 1) . '.</p>';
+    }
+    $reponse .= '<p>La médiane est <strong>' . med_formater_nombre($mediane) . $unite . '</strong></p>';
+
     return [
         'type' => 'mediane',
         'difficulte_id' => $difficulte,
-        'question' => '<p>' . $phrase . $liste_valeurs . '</p><p>Que vaut la médiane de cette série ?</p>',
-        'reponse' => '<p>' . $reponse_text . '</p>'
+        'question' => '<p>' . $phrase . $liste_valeurs . '</p><p>Que vaut la médiane de cette série'
+                    . (!empty($contexte['unite']) ? ', <strong>en ' . $unites_question[$contexte['unite']] . '</strong>' : '')
+                    . ' ?</p>',
+        'reponse' => $reponse
     ];
+}
+
+/**
+ * Une médiane d'effectif pair peut valoir un demi-entier (ex. 12,5).
+ * Fonction locale pour rester utilisable même si functions/moyenne.php
+ * (qui expose formater_nombre) n'est pas chargé.
+ */
+if (!function_exists('med_formater_nombre')) {
+    function med_formater_nombre($n) {
+        if ($n == intval($n)) {
+            return intval($n);
+        }
+        return str_replace('.', ',', rtrim(rtrim(number_format($n, 2, '.', ''), '0'), '.'));
+    }
 }

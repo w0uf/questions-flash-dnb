@@ -5,7 +5,23 @@
  * Format : Questions OUI/NON et QCM
  */
 
-function generer_angles() {
+function generer_angles($famille = '') {
+    // Filtre optionnel de famille, traité avant le pool historique : l'appel
+    // sans argument (session DNB) continue de piocher dans tout le catalogue.
+    $par_famille = [
+        'reconnaitre' => ['angle_45_aigu', 'angle_120_obtus', 'angle_90_droit', 'angle_180_plat',
+                          'angle_60_obtus_faux', 'angle_135_aigu_faux',
+                          'opposes_vrais', 'opposes_adjacents', 'opposes_egaux_faux',
+                          'adjacents_vrais', 'adjacents_separes', 'adjacents_opposes',
+                          'adjacents_alignes', 'supplementaires_90_90', 'supplementaires_110_70',
+                          'supplementaires_60_80', 'supplementaires_45_135'],
+        'paralleles'  => ['par_nommer', 'par_calculer_egaux', 'par_calculer_supp', 'par_vrai_faux'],
+    ];
+    if (isset($par_famille[$famille])) {
+        $liste = $par_famille[$famille];
+        return ang_construire($liste[array_rand($liste)]);
+    }
+
     // ========================================
     // SYSTÈME DE POOL POUR ÉQUILIBRAGE
     // ========================================
@@ -36,12 +52,29 @@ function generer_angles() {
             'supplementaires_110_70',  // 110° + 70° = 180° → OUI
             'supplementaires_60_80',   // 60° + 80° ≠ 180° → NON
             'supplementaires_45_135',  // 45° + 135° = 180° → OUI
+
+            // DEUX PARALLÈLES ET UNE SÉCANTE (ajouté en août 2026 : les angles
+            // correspondants et alternes-internes sont revenus au programme)
+            'par_nommer',              // nommer la relation entre deux angles marqués
+            'par_calculer_egaux',      // en déduire une mesure (angles égaux)
+            'par_calculer_supp',       // internes du même côté → supplémentaires
+            'par_vrai_faux',           // une affirmation à valider
         ];
         shuffle($_SESSION['angles_pool']);
     }
     
     $type_question = array_shift($_SESSION['angles_pool']);
-    
+
+    return ang_construire($type_question);
+}
+
+/** Construit la question d'un sous-type (extrait en août 2026). */
+function ang_construire($type_question) {
+    // Sous-types « deux parallèles et une sécante » : générateur dédié.
+    if (strpos($type_question, 'par_') === 0) {
+        return ang_paralleles(substr($type_question, 4));
+    }
+
     $question_html = '';
     $reponse_html = '';
     $difficulte = 1.0;
@@ -269,7 +302,7 @@ function generer_qcm_angles($propositions_data, $bonne_reponse_key) {
 // ============================================
 
 function generer_angle_isole($mesure_degres) {
-    $svg = '<svg width="350" height="280" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0;">';
+    $svg = '<svg viewBox="0 0 350 280" width="350" height="280" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0; max-width:100%; height:auto;">';
     
     // Point B (sommet de l'angle) - décalé plus bas
     $bx = 80; $by = 220;
@@ -310,7 +343,7 @@ function generer_angle_isole($mesure_degres) {
 }
 
 function generer_angle_plat() {
-    $svg = '<svg width="350" height="120" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0;">';
+    $svg = '<svg viewBox="0 0 350 120" width="350" height="120" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0; max-width:100%; height:auto;">';
     
     // Angle plat = droite
     $ax = 30; $ay = 60;
@@ -342,7 +375,7 @@ function generer_angle_plat() {
 // ============================================
 
 function generer_droites_secantes($type_angles) {
-    $svg = '<svg width="350" height="300" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0;">';
+    $svg = '<svg viewBox="0 0 350 300" width="350" height="300" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0; max-width:100%; height:auto;">';
     
     // Point d'intersection O
     $ox = 175; $oy = 150;
@@ -379,7 +412,7 @@ function generer_droites_secantes($type_angles) {
 }
 
 function generer_angles_egaux_non_opposes() {
-    $svg = '<svg width="350" height="250" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0;">';
+    $svg = '<svg viewBox="0 0 350 250" width="350" height="250" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0; max-width:100%; height:auto;">';
     
     // Deux angles de 60° égaux mais séparés
     // Premier angle à gauche
@@ -411,7 +444,7 @@ function generer_angles_egaux_non_opposes() {
 }
 
 function generer_angles_quelconques() {
-    $svg = '<svg width="350" height="250" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0;">';
+    $svg = '<svg viewBox="0 0 350 250" width="350" height="250" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0; max-width:100%; height:auto;">';
     
     // Deux angles sans relation particulière
     // Premier angle 50°
@@ -443,7 +476,7 @@ function generer_angles_quelconques() {
 // ============================================
 
 function generer_angles_adjacents_vrais() {
-    $svg = '<svg width="350" height="250" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0;">';
+    $svg = '<svg viewBox="0 0 350 250" width="350" height="250" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0; max-width:100%; height:auto;">';
     
     // Sommet commun O
     $ox = 80; $oy = 180;
@@ -473,7 +506,7 @@ function generer_angles_adjacents_vrais() {
 }
 
 function generer_angles_separes() {
-    $svg = '<svg width="350" height="250" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0;">';
+    $svg = '<svg viewBox="0 0 350 250" width="350" height="250" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0; max-width:100%; height:auto;">';
     
     // Premier angle à gauche
     $o1x = 80; $o1y = 180;
@@ -500,7 +533,7 @@ function generer_angles_separes() {
 }
 
 function generer_angles_alignes_non_adjacents() {
-    $svg = '<svg width="400" height="150" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0;">';
+    $svg = '<svg viewBox="0 0 400 150" width="400" height="150" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0; max-width:100%; height:auto;">';
     
     // Trois points alignés A, O, B, C
     $ax = 30; $ay = 75;
@@ -538,7 +571,7 @@ function generer_angles_alignes_non_adjacents() {
 // ============================================
 
 function generer_deux_angles_droits_codes() {
-    $svg = '<svg width="400" height="200" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0;">';
+    $svg = '<svg viewBox="0 0 400 200" width="400" height="200" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0; max-width:100%; height:auto;">';
     
     // Premier angle droit à gauche
     $o1x = 100; $o1y = 150;
@@ -568,7 +601,7 @@ function generer_deux_angles_droits_codes() {
 }
 
 function generer_deux_angles_mesures($angle1, $angle2) {
-    $svg = '<svg width="400" height="200" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0;">';
+    $svg = '<svg viewBox="0 0 400 200" width="400" height="200" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0; max-width:100%; height:auto;">';
     
     // Premier angle à gauche
     $o1x = 80; $o1y = 150;
@@ -595,4 +628,210 @@ function generer_deux_angles_mesures($angle1, $angle2) {
     $svg .= '</svg>';
     return $svg;
 }
+
+// ═════════════════════════════════════════════════════════════════════════════
+//  DEUX PARALLÈLES COUPÉES PAR UNE SÉCANTE
+//  Ajouté en août 2026 : les angles correspondants et alternes-internes sont
+//  revenus au programme du cycle 4. Le fichier ne traitait jusque-là que les
+//  angles isolés, opposés par le sommet, adjacents et supplémentaires.
+//
+//  Convention de repérage d'un angle autour d'un point d'intersection :
+//    'v' = 'haut' | 'bas'    → au-dessus ou au-dessous de la parallèle
+//    'h' = 'g'    | 'd'      → à gauche ou à droite de la sécante
+//  Les deux parallèles sont horizontales, la sécante oblique : « gauche » et
+//  « droite » se lisent donc par rapport à la sécante à la hauteur du label.
+// ═════════════════════════════════════════════════════════════════════════════
+
+/**
+ * Figure : (d1) // (d2) coupées par la sécante (Δ), avec des angles marqués.
+ * $marques : liste de ['pt' => 'A'|'B', 'v' => 'haut'|'bas', 'h' => 'g'|'d',
+ *                      'txt' => '62°'|'x'|'1', 'couleur' => '#c0392b']
+ */
+function ang_svg_paralleles(array $marques) {
+    $W = 500; $H = 380;
+    $y1 = 120; $y2 = 270;                  // les deux parallèles
+    $xg = 45;  $xd = 455;                  // leur étendue
+
+    // Sécante : pente choisie pour rester lisible, deux orientations possibles
+    $penche_droite = true;
+    $x_bas = 175; $x_haut = 330;           // du bas vers le haut
+    $dx = $x_haut - $x_bas; $dy = -(350 - 40);
+
+    $inter = function ($y) use ($x_bas, $dx, $dy) {
+        $t = ($y - 350) / $dy;
+        return $x_bas + $dx * $t;
+    };
+    $Ax = $inter($y1); $Bx = $inter($y2);
+
+    $svg = '<svg viewBox="0 0 ' . $W . ' ' . $H . '" width="' . $W . '" height="' . $H . '" '
+         . 'xmlns="http://www.w3.org/2000/svg" role="img" '
+         . 'aria-label="Deux droites parallèles coupées par une sécante" '
+         . 'style="max-width:100%; height:auto; display:block; margin:12px auto; background:#fff;">';
+
+    // Les deux parallèles + codage du parallélisme (double chevron)
+    foreach ([[$y1, 'd₁'], [$y2, 'd₂']] as [$y, $nom]) {
+        $svg .= '<line x1="' . $xg . '" y1="' . $y . '" x2="' . $xd . '" y2="' . $y . '" stroke="#333" stroke-width="2.5"/>';
+        $svg .= '<text x="' . ($xd + 5) . '" y="' . ($y + 5) . '" font-size="16" font-style="italic" fill="#333">' . $nom . '</text>';
+        for ($k = 0; $k < 2; $k++) {
+            $cx = 90 + $k * 14;
+            $svg .= '<polyline points="' . $cx . ',' . ($y - 7) . ' ' . ($cx + 8) . ',' . $y . ' ' . $cx . ',' . ($y + 7)
+                  . '" fill="none" stroke="#2f7ed8" stroke-width="2"/>';
+        }
+    }
+
+    // La sécante
+    $svg .= '<line x1="' . $x_bas . '" y1="350" x2="' . $x_haut . '" y2="40" stroke="#333" stroke-width="2.5"/>';
+    $svg .= '<text x="' . ($x_haut + 4) . '" y="34" font-size="16" font-style="italic" fill="#333">&#916;</text>';
+
+    // Points d'intersection
+    foreach ([[$Ax, $y1, 'A'], [$Bx, $y2, 'B']] as [$x, $y, $nom]) {
+        $svg .= '<circle cx="' . round($x, 1) . '" cy="' . $y . '" r="4" fill="#333"/>';
+        $svg .= '<text x="' . (round($x, 1) - 22) . '" y="' . ($y - 10) . '" font-size="15" font-weight="bold" fill="#333">' . $nom . '</text>';
+    }
+
+    // Angles marqués
+    foreach ($marques as $m) {
+        $x0 = ($m['pt'] === 'A') ? $Ax : $y1 && $Bx;
+        $x0 = ($m['pt'] === 'A') ? $Ax : $Bx;
+        $y0 = ($m['pt'] === 'A') ? $y1 : $y2;
+        $coul = $m['couleur'] ?? '#c0392b';
+
+        // Décalage du label : vertical selon 'v', horizontal selon 'h', corrigé
+        // de l'inclinaison de la sécante à la hauteur du label.
+        $dyl = ($m['v'] === 'haut') ? -30 : 32;
+        $biais = $dyl * ($dx / $dy);                    // abscisse de la sécante à cette hauteur
+        $dxl = ($m['h'] === 'd') ? $biais + 26 : $biais - 40;
+
+        $svg .= '<path d="' . ang_arc($x0, $y0, $m['v'], $m['h'], $dx, $dy) . '" fill="none" stroke="' . $coul . '" stroke-width="2.5"/>';
+        $svg .= '<text x="' . round($x0 + $dxl, 1) . '" y="' . round($y0 + $dyl, 1) . '" font-size="17" font-weight="bold" fill="' . $coul . '">'
+              . $m['txt'] . '</text>';
+    }
+
+    $svg .= '</svg>';
+    return $svg;
+}
+
+/** Petit arc de cercle matérialisant l'angle marqué autour de (x0 ; y0). */
+function ang_arc($x0, $y0, $v, $h, $dx, $dy) {
+    $r = 26;
+    // Point sur la parallèle, du côté demandé
+    $px = $x0 + (($h === 'd') ? $r : -$r);
+    $py = $y0;
+    // Point sur la sécante, du côté demandé (vers le haut ou vers le bas)
+    $norme = sqrt($dx * $dx + $dy * $dy);
+    $ux = $dx / $norme; $uy = $dy / $norme;             // vecteur unitaire vers le haut
+    $sens = ($v === 'haut') ? 1 : -1;
+    $qx = $x0 + $sens * $r * $ux;
+    $qy = $y0 + $sens * $r * $uy;
+    $sweep = (($h === 'd') === ($v === 'haut')) ? 0 : 1;
+    return 'M ' . round($px, 1) . ' ' . round($py, 1) . ' A ' . $r . ' ' . $r . ' 0 0 ' . $sweep . ' ' . round($qx, 1) . ' ' . round($qy, 1);
+}
+
+/**
+ * Les quatre sous-types « parallèles » :
+ *   nommer          → quelle relation entre les deux angles marqués ?
+ *   calculer_egaux  → une mesure donnée, l'autre à déduire (angles égaux)
+ *   calculer_supp   → internes du même côté : supplémentaires
+ *   vrai_faux       → valider une affirmation
+ */
+function ang_paralleles($sous_type) {
+    $mesure = [35, 42, 48, 55, 62, 68, 74, 118, 125, 133][rand(0, 9)];
+
+    // Les trois configurations de base, décrites une fois pour toutes.
+    // A est sur (d1), B sur (d2) ; « interne » = entre les deux parallèles,
+    // donc 'bas' en A et 'haut' en B.
+    $configs = [
+        'alternes' => [
+            'nom'   => 'alternes-internes',
+            'A'     => ['v' => 'bas',  'h' => 'g'],
+            'B'     => ['v' => 'haut', 'h' => 'd'],
+            'egaux' => true,
+            'regle' => 'Deux angles <strong>alternes-internes</strong> sont situés de part et d\'autre de la sécante, '
+                     . 'entre les deux parallèles. Quand les droites sont parallèles, ils sont <strong>égaux</strong>.',
+        ],
+        'correspondants' => [
+            'nom'   => 'correspondants',
+            'A'     => ['v' => 'haut', 'h' => 'd'],
+            'B'     => ['v' => 'haut', 'h' => 'd'],
+            'egaux' => true,
+            'regle' => 'Deux angles <strong>correspondants</strong> occupent la même position à chaque intersection '
+                     . '(ici en haut à droite). Quand les droites sont parallèles, ils sont <strong>égaux</strong>.',
+        ],
+        'internes_meme_cote' => [
+            'nom'   => 'internes du même côté',
+            'A'     => ['v' => 'bas',  'h' => 'd'],
+            'B'     => ['v' => 'haut', 'h' => 'd'],
+            'egaux' => false,
+            'regle' => 'Deux angles <strong>internes du même côté</strong> de la sécante sont '
+                     . '<strong>supplémentaires</strong> : leur somme vaut 180°.',
+        ],
+    ];
+
+    switch ($sous_type) {
+
+        case 'nommer':
+            $cle = array_rand($configs);
+            $c = $configs[$cle];
+            $svg = ang_svg_paralleles([
+                ['pt' => 'A', 'v' => $c['A']['v'], 'h' => $c['A']['h'], 'txt' => '1'],
+                ['pt' => 'B', 'v' => $c['B']['v'], 'h' => $c['B']['h'], 'txt' => '2', 'couleur' => '#2f7ed8'],
+            ]);
+            $props = [
+                'alternes'           => 'alternes-internes',
+                'correspondants'     => 'correspondants',
+                'internes_meme_cote' => 'internes du même côté',
+                'opposes'            => 'opposés par le sommet',
+            ];
+            $qcm = generer_qcm_angles($props, $cle === 'internes_meme_cote' ? 'internes_meme_cote' : $cle);
+            $q = '<div style="text-align:center;">' . $svg
+               . '<p style="margin-top:14px;"><strong>Comment appelle-t-on les angles marqués 1 et 2 ?</strong></p></div>'
+               . $qcm['html'];
+            $r = '<p><strong>' . $qcm['bonne_lettre'] . ' — ' . $c['nom'] . '</strong></p>'
+               . '<p style="font-size:0.9em; color:#666;">' . $c['regle'] . '</p>';
+            return ['type' => 'angles', 'difficulte_id' => 1.6, 'question' => $q, 'reponse' => $r];
+
+        case 'calculer_supp':
+            $c = $configs['internes_meme_cote'];
+            $svg = ang_svg_paralleles([
+                ['pt' => 'A', 'v' => $c['A']['v'], 'h' => $c['A']['h'], 'txt' => $mesure . '°'],
+                ['pt' => 'B', 'v' => $c['B']['v'], 'h' => $c['B']['h'], 'txt' => 'x', 'couleur' => '#2f7ed8'],
+            ]);
+            $q = '<div style="text-align:center;">' . $svg
+               . '<p style="margin-top:14px;">Les droites (d₁) et (d₂) sont <strong>parallèles</strong>.</p>'
+               . '<p><strong>Quelle est la mesure de l\'angle x ?</strong></p></div>';
+            $r = '<p><strong>x = ' . (180 - $mesure) . '°</strong></p>'
+               . '<p style="font-size:0.9em; color:#666;">' . $c['regle'] . '</p>'
+               . '<p style="font-size:0.9em; color:#666;">Donc x = 180° &minus; ' . $mesure . '° = ' . (180 - $mesure) . '°.</p>';
+            return ['type' => 'angles', 'difficulte_id' => 2.0, 'question' => $q, 'reponse' => $r];
+
+        case 'vrai_faux':
+            $cle = array_rand($configs);
+            $c = $configs[$cle];
+            $affirme_egaux = (rand(0, 1) === 1);
+            $juste = ($affirme_egaux === $c['egaux']);
+            $q = '<p>Deux droites parallèles sont coupées par une sécante.</p>'
+               . '<p><strong>« Les angles ' . $c['nom'] . ' ainsi formés sont '
+               . ($affirme_egaux ? 'égaux' : 'supplémentaires') . '. »</strong></p>'
+               . '<p>Vrai ou faux ?</p>';
+            $r = '<p><strong>' . ($juste ? 'Vrai' : 'Faux') . '</strong></p>'
+               . '<p style="font-size:0.9em; color:#666;">' . $c['regle'] . '</p>';
+            return ['type' => 'angles', 'difficulte_id' => 1.8, 'question' => $q, 'reponse' => $r];
+
+        default: // calculer_egaux
+            $cle = (rand(0, 1) === 0) ? 'alternes' : 'correspondants';
+            $c = $configs[$cle];
+            $svg = ang_svg_paralleles([
+                ['pt' => 'A', 'v' => $c['A']['v'], 'h' => $c['A']['h'], 'txt' => $mesure . '°'],
+                ['pt' => 'B', 'v' => $c['B']['v'], 'h' => $c['B']['h'], 'txt' => 'x', 'couleur' => '#2f7ed8'],
+            ]);
+            $q = '<div style="text-align:center;">' . $svg
+               . '<p style="margin-top:14px;">Les droites (d₁) et (d₂) sont <strong>parallèles</strong>.</p>'
+               . '<p><strong>Quelle est la mesure de l\'angle x ?</strong></p></div>';
+            $r = '<p><strong>x = ' . $mesure . '°</strong></p>'
+               . '<p style="font-size:0.9em; color:#666;">Les deux angles marqués sont ' . $c['nom'] . '. '
+               . $c['regle'] . '</p>';
+            return ['type' => 'angles', 'difficulte_id' => 1.9, 'question' => $q, 'reponse' => $r];
+    }
+}
+
 ?>

@@ -12,7 +12,20 @@
  * - Regard critique (8%)
  */
 
-function generer_transformations() {
+function generer_transformations($famille = '') {
+    // Filtre optionnel, traité avant le pool historique : le tirage du DNB
+    // (appel sans argument) est inchangé.
+    $par_famille = [
+        'reconnaitre' => ['reconnaissance_axiale', 'reconnaissance_centrale', 'reconnaissance_translation'],
+        'proprietes'  => ['propriete_axiale', 'propriete_centrale', 'propriete_translation', 'regard_critique'],
+        'reperage'    => ['image_axiale', 'image_axiale_oy', 'image_centrale', 'image_translation'],
+        'lettres'     => ['identifier_symetries'],
+    ];
+    if (isset($par_famille[$famille])) {
+        $liste = $par_famille[$famille];
+        return tr_construire($liste[array_rand($liste)]);
+    }
+
     // Anti-doublon : pool de types
     if (!isset($_SESSION['transformations_pool']) || empty($_SESSION['transformations_pool'])) {
         $_SESSION['transformations_pool'] = [
@@ -26,8 +39,9 @@ function generer_transformations() {
             'propriete_centrale',
             'propriete_translation',
             
-            // Image de point (3)
+            // Image de point (4)
             'image_axiale',
+            'image_axiale_oy',   // symétrie d'axe (Oy) — n'était jamais proposée
             'image_centrale',
             'image_translation',
             
@@ -42,7 +56,16 @@ function generer_transformations() {
     }
     
     $type = array_shift($_SESSION['transformations_pool']);
-    
+
+    return tr_construire($type);
+}
+
+/**
+ * Aiguillage d'un sous-type vers son générateur.
+ * (Extrait de generer_transformations() en août 2026 pour être appelable aussi
+ * bien par le pool du DNB que par le filtre de famille d'une page QF.)
+ */
+function tr_construire($type) {
     switch ($type) {
         case 'reconnaissance_axiale':
             return generer_reconnaissance_transformation('axiale');
@@ -60,6 +83,8 @@ function generer_transformations() {
             
         case 'image_axiale':
             return generer_image_point('axiale');
+        case 'image_axiale_oy':
+            return generer_image_point('axiale_oy');
         case 'image_centrale':
             return generer_image_point('centrale');
         case 'image_translation':
@@ -224,31 +249,59 @@ function generer_propriete_transformation($type) {
  * Type 3 : Image de point sur quadrillage
  */
 function generer_image_point($type) {
+    // Coordonnées tirées au hasard (août 2026). Elles étaient codées en dur :
+    // le même point revenait à chaque fois, il n'y avait donc en tout et pour
+    // tout que trois questions possibles dans cette famille.
+    $x = rand(1, 5) * (rand(0, 1) ? 1 : -1);
+    $y = rand(1, 5) * (rand(0, 1) ? 1 : -1);
+
+    // Translation : vecteur de A vers B, choisi pour que l'image reste dans le
+    // repère dessiné (abscisses et ordonnées de −6 à 6).
+    $ax = rand(-3, 1);
+    $ay = rand(-3, 1);
+    $dx = rand(1, 3);
+    $dy = rand(1, 3);
+    $tx = min(max($x, -3), 3);
+    $ty = min(max($y, -3), 3);
+
     $variantes = [
         'axiale' => [
             'axe' => 'Ox',
-            'point_depart' => [3, 2],
-            'point_image' => [3, -2],
+            'point_depart' => [$x, $y],
+            'point_image' => [$x, -$y],
             'question_text' => 'l\'axe des abscisses',
+            'regle' => 'Par symétrie d\'axe (Ox), l\'abscisse ne change pas et l\'ordonnée change de signe.',
             'difficulte' => 1.6
+        ],
+        'axiale_oy' => [
+            'axe' => 'Oy',
+            'point_depart' => [$x, $y],
+            'point_image' => [-$x, $y],
+            'question_text' => 'l\'axe des ordonnées',
+            'regle' => 'Par symétrie d\'axe (Oy), c\'est l\'inverse : l\'ordonnée ne change pas et l\'abscisse change de signe.',
+            'difficulte' => 1.7
         ],
         'centrale' => [
             'centre' => [0, 0],
-            'point_depart' => [2, 3],
-            'point_image' => [-2, -3],
+            'point_depart' => [$x, $y],
+            'point_image' => [-$x, -$y],
             'question_text' => 'le centre O',
+            'regle' => 'Par symétrie de centre O, <strong>les deux</strong> coordonnées changent de signe.',
             'difficulte' => 1.7
         ],
         'translation' => [
-            'point_a' => [1, 1],
-            'point_b' => [3, 4],
-            'point_depart' => [2, 2],
-            'point_image' => [4, 5],
-            'question_text' => 'la translation qui transforme A(1 ; 1) en B(3 ; 4)',
+            'point_a' => [$ax, $ay],
+            'point_b' => [$ax + $dx, $ay + $dy],
+            'point_depart' => [$tx, $ty],
+            'point_image' => [$tx + $dx, $ty + $dy],
+            'question_text' => 'la translation qui transforme A(' . $ax . ' ; ' . $ay . ') en B('
+                             . ($ax + $dx) . ' ; ' . ($ay + $dy) . ')',
+            'regle' => 'On lit le déplacement de A vers B : ' . ($dx >= 0 ? '+' : '') . $dx . ' en abscisse et '
+                     . ($dy >= 0 ? '+' : '') . $dy . ' en ordonnée. On applique <strong>le même</strong> déplacement au point.',
             'difficulte' => 2.0
         ]
     ];
-    
+
     $var = $variantes[$type];
     
     // Générer SVG avec repère et point
@@ -257,7 +310,7 @@ function generer_image_point($type) {
     $question = '<div style="text-align: center;">';
     $question .= $svg;
     
-    if ($type == 'axiale') {
+    if ($type == 'axiale' || $type == 'axiale_oy') {
         $question .= '<p style="margin-top: 20px;">Le point M a pour coordonnées (' . $var['point_depart'][0] . ' ; ' . $var['point_depart'][1] . ').</p>';
         $question .= '<p><strong>Quelles sont les coordonnées de son image M\' par symétrie d\'axe ' . $var['question_text'] . ' ?</strong></p>';
     } elseif ($type == 'centrale') {
@@ -279,8 +332,9 @@ function generer_image_point($type) {
     $qcm = generer_qcm_transformations($propositions, 'bonne');
     $question .= $qcm['html'];
     
-    $reponse = '<p><strong>' . $qcm['bonne_lettre'] . ' ' . $bonne . '</strong></p>';
-    
+    $reponse = '<p><strong>' . $qcm['bonne_lettre'] . ' ' . $bonne . '</strong></p>'
+             . '<p style="font-size:0.9em; color:#666;">' . $var['regle'] . '</p>';
+
     return [
         'type' => 'transformations',
         'difficulte_id' => $var['difficulte'],
@@ -431,7 +485,7 @@ function generer_identifier_symetries() {
  * SVG : Lettres majuscules
  */
 function generer_svg_lettre($lettre) {
-    $svg = '<svg width="400" height="350" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 400 350" width="400" height="350" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block; max-width:100%; height:auto;">';
     $svg .= generer_quadrillage_svg(400, 350, 20);
     
     $stroke_width = 12;
@@ -593,7 +647,7 @@ function generer_regard_critique_transformation() {
  * SVG : Deux figures avec transformation
  */
 function generer_svg_deux_figures_transformation($type) {
-    $svg = '<svg width="500" height="400" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 500 400" width="500" height="400" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block; max-width:100%; height:auto;">';
     
     // Quadrillage
     $svg .= generer_quadrillage_svg(500, 400, 25);
@@ -640,7 +694,10 @@ function generer_svg_deux_figures_transformation($type) {
  * SVG : Repère avec point pour image
  */
 function generer_svg_repere_avec_point($type, $var) {
-    $svg = '<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block;">';
+    // viewBox ajouté en août 2026 : sans lui la figure était rognée sur mobile
+    // au lieu d'être mise à l'échelle.
+    $svg = '<svg viewBox="0 0 400 400" width="400" height="400" xmlns="http://www.w3.org/2000/svg" '
+         . 'style="margin: 15px auto; display: block; max-width: 100%; height: auto;">';
     
     // Repère centré
     $cx = 200; $cy = 200; $unite = 30;
@@ -660,13 +717,19 @@ function generer_svg_repere_avec_point($type, $var) {
     $py = $cy - $var['point_depart'][1] * $unite;
     $svg .= '<circle cx="' . $px . '" cy="' . $py . '" r="5" fill="#0066cc"/>';
     
-    $lettre = ($type == 'axiale') ? 'M' : (($type == 'centrale') ? 'N' : 'P');
+    $lettre = ($type == 'axiale' || $type == 'axiale_oy') ? 'M' : (($type == 'centrale') ? 'N' : 'P');
     $svg .= '<text x="' . ($px + 10) . '" y="' . ($py - 5) . '" font-size="16" fill="#0066cc" font-weight="bold">' . $lettre . '</text>';
     
     // Axe ou centre selon le type
-    if ($type == 'axiale') {
+    if ($type == 'axiale' || $type == 'axiale_oy') {
         $svg .= '<text x="360" y="205" font-size="14" fill="#000">x</text>';
         $svg .= '<text x="205" y="45" font-size="14" fill="#000">y</text>';
+        // L'axe de symétrie concerné est mis en évidence
+        if ($type == 'axiale') {
+            $svg .= '<line x1="50" y1="' . $cy . '" x2="350" y2="' . $cy . '" stroke="#c0392b" stroke-width="3"/>';
+        } else {
+            $svg .= '<line x1="' . $cx . '" y1="50" x2="' . $cx . '" y2="350" stroke="#c0392b" stroke-width="3"/>';
+        }
     } elseif ($type == 'centrale') {
         $svg .= '<circle cx="' . $cx . '" cy="' . $cy . '" r="4" fill="#ff0000"/>';
         $svg .= '<text x="' . ($cx + 10) . '" y="' . ($cy - 5) . '" font-size="14" fill="#ff0000" font-weight="bold">O</text>';
@@ -691,7 +754,7 @@ function generer_svg_repere_avec_point($type, $var) {
  * SVG : Figure avec axe de symétrie
  */
 function generer_svg_figure_avec_axe($orientation) {
-    $svg = '<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 400 300" width="400" height="300" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block; max-width:100%; height:auto;">';
     
     // Quadrillage
     $svg .= generer_quadrillage_svg(400, 300, 20);
@@ -724,7 +787,7 @@ function generer_svg_figure_avec_axe($orientation) {
  * SVG : Figure avec centre de symétrie
  */
 function generer_svg_figure_avec_centre() {
-    $svg = '<svg width="300" height="300" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 300 300" width="300" height="300" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block; max-width:100%; height:auto;">';
     
     // Quadrillage
     $svg .= generer_quadrillage_svg(300, 300, 20);
@@ -755,7 +818,7 @@ function generer_svg_figure_avec_centre() {
  * SVG : Erreur de transformation
  */
 function generer_svg_erreur_transformation($type) {
-    $svg = '<svg width="350" height="250" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 350 250" width="350" height="250" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block; max-width:100%; height:auto;">';
     
     $svg .= generer_quadrillage_svg(350, 250, 20);
     
@@ -819,6 +882,12 @@ function generer_distracteurs_transformations($depart, $image, $type) {
         $propositions['erreur1'] = '(' . $x_img . ' ; ' . $y . ')'; // y non inversé
         $propositions['erreur2'] = '(' . (-$x) . ' ; ' . $y . ')'; // x inversé au lieu de y (symétrie d'axe Oy)
         $propositions['erreur3'] = '(' . (-$x) . ' ; ' . (-$y) . ')'; // les deux inversés (symétrie centrale)
+    } elseif ($type == 'axiale_oy') {
+        // Symétrie d'axe (Oy) : image = (−x ; y). Distracteurs symétriques de
+        // ceux du cas (Ox), sans quoi « erreur1 » vaudrait la bonne réponse.
+        $propositions['erreur1'] = '(' . $x . ' ; ' . $y . ')';        // rien de changé
+        $propositions['erreur2'] = '(' . $x . ' ; ' . (-$y) . ')';     // ordonnée inversée (axe Ox)
+        $propositions['erreur3'] = '(' . (-$x) . ' ; ' . (-$y) . ')';  // les deux (symétrie centrale)
     } elseif ($type == 'centrale') {
         $propositions['erreur1'] = '(' . $x . ' ; ' . $y . ')'; // pas changé
         $propositions['erreur2'] = '(' . $x_img . ' ; ' . $y . ')'; // x inversé seulement

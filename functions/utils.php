@@ -73,3 +73,22 @@ function get_unique_question_num($auto_type, $max_questions) {
 
     return $num;
 }
+
+/**
+ * Fraction en HTML, écriture verticale simple.
+ *
+ * Vivait dans functions/cosinus.php, alors que functions/probabilites.php s'en
+ * sert six fois : la dépendance ne tenait que parce que la session DNB charge
+ * TOUS les générateurs. Une page qui n'incluait que probabilites.php plantait
+ * sur « Call to undefined function fraction() ». Déplacée ici, dans le fichier
+ * déjà partagé. La définition de cosinus.php, gardée par function_exists,
+ * reste inoffensive.
+ */
+if (!function_exists('fraction')) {
+    function fraction($numerateur, $denominateur) {
+        return '<span style="display: inline-block; vertical-align: middle; text-align: center;">' .
+               '<span style="display: block; border-bottom: 1px solid #000; padding: 0 5px;">' . $numerateur . '</span>' .
+               '<span style="display: block; padding: 0 5px;">' . $denominateur . '</span>' .
+               '</span>';
+    }
+}

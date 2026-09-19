@@ -103,7 +103,7 @@ function generer_perimetre_rectangle($niveau) {
     $x = ($svg_width - $rect_width) / 2;
     $y = ($svg_height - $rect_height) / 2;
     
-    $svg = '<svg width="' . $svg_width . '" height="' . $svg_height . '" xmlns="http://www.w3.org/2000/svg">';
+    $svg = '<svg viewBox="0 0 ' . $svg_width . ' ' . $svg_height . '" width="' . $svg_width . '" height="' . $svg_height . '" xmlns="http://www.w3.org/2000/svg" style="max-width:100%; height:auto;">';
     
     // Rectangle
     $svg .= '<rect x="' . $x . '" y="' . $y . '" width="' . $rect_width . '" height="' . $rect_height . '" ';
@@ -185,7 +185,7 @@ function generer_perimetre_carre($niveau) {
     $x = ($svg_width - $carre_size) / 2;
     $y = ($svg_height - $carre_size) / 2;
     
-    $svg = '<svg width="' . $svg_width . '" height="' . $svg_height . '" xmlns="http://www.w3.org/2000/svg">';
+    $svg = '<svg viewBox="0 0 ' . $svg_width . ' ' . $svg_height . '" width="' . $svg_width . '" height="' . $svg_height . '" xmlns="http://www.w3.org/2000/svg" style="max-width:100%; height:auto;">';
     
     // Carré
     $svg .= '<rect x="' . $x . '" y="' . $y . '" width="' . $carre_size . '" height="' . $carre_size . '" ';
@@ -273,7 +273,7 @@ function generer_perimetre_triangle($niveau) {
     $x3 = 180;
     $y3 = 80;
     
-    $svg = '<svg width="' . $svg_width . '" height="' . $svg_height . '" xmlns="http://www.w3.org/2000/svg">';
+    $svg = '<svg viewBox="0 0 ' . $svg_width . ' ' . $svg_height . '" width="' . $svg_width . '" height="' . $svg_height . '" xmlns="http://www.w3.org/2000/svg" style="max-width:100%; height:auto;">';
     
     // Triangle
     $svg .= '<polygon points="' . $x1 . ',' . $y1 . ' ' . $x2 . ',' . $y2 . ' ' . $x3 . ',' . $y3 . '" ';
@@ -367,7 +367,7 @@ function generer_perimetre_triangle_equilateral($niveau) {
     $x3 = $x1 + $side / 2;
     $y3 = $y1 - $height;
     
-    $svg = '<svg width="' . $svg_width . '" height="' . $svg_height . '" xmlns="http://www.w3.org/2000/svg">';
+    $svg = '<svg viewBox="0 0 ' . $svg_width . ' ' . $svg_height . '" width="' . $svg_width . '" height="' . $svg_height . '" xmlns="http://www.w3.org/2000/svg" style="max-width:100%; height:auto;">';
     
     // Triangle
     $svg .= '<polygon points="' . $x1 . ',' . $y1 . ' ' . $x2 . ',' . $y2 . ' ' . $x3 . ',' . $y3 . '" ';
@@ -434,7 +434,7 @@ function generer_perimetre_pentagone($niveau) {
     $center_y = 160;
     $radius = 90;
     
-    $svg = '<svg width="' . $svg_width . '" height="' . $svg_height . '" xmlns="http://www.w3.org/2000/svg">';
+    $svg = '<svg viewBox="0 0 ' . $svg_width . ' ' . $svg_height . '" width="' . $svg_width . '" height="' . $svg_height . '" xmlns="http://www.w3.org/2000/svg" style="max-width:100%; height:auto;">';
     
     // Calculer les 5 sommets
     $points = [];
@@ -505,7 +505,7 @@ function generer_perimetre_hexagone($niveau) {
     $center_y = 150;
     $radius = 90;
     
-    $svg = '<svg width="' . $svg_width . '" height="' . $svg_height . '" xmlns="http://www.w3.org/2000/svg">';
+    $svg = '<svg viewBox="0 0 ' . $svg_width . ' ' . $svg_height . '" width="' . $svg_width . '" height="' . $svg_height . '" xmlns="http://www.w3.org/2000/svg" style="max-width:100%; height:auto;">';
     
     // Calculer les 6 sommets
     $points = [];
@@ -591,7 +591,7 @@ function generer_perimetre_disque($niveau) {
     // Cercle de taille fixe (rayon visuel constant)
     $circle_radius = 100;
     
-    $svg = '<svg width="' . $svg_width . '" height="' . $svg_height . '" xmlns="http://www.w3.org/2000/svg">';
+    $svg = '<svg viewBox="0 0 ' . $svg_width . ' ' . $svg_height . '" width="' . $svg_width . '" height="' . $svg_height . '" xmlns="http://www.w3.org/2000/svg" style="max-width:100%; height:auto;">';
     
     // Cercle - trait noir simple
     $svg .= '<circle cx="' . $center_x . '" cy="' . $center_y . '" r="' . $circle_radius . '" ';

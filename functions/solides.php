@@ -239,7 +239,7 @@ function generer_solides() {
 // ============================================
 
 function generer_svg_cube() {
-    $svg = '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 200 200" width="200" height="200" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block; max-width:100%; height:auto;">';
     
     // 1. Faces (SANS stroke)
     $svg .= '<rect x="60" y="80" width="80" height="80" fill="#e0e0e0" stroke="none"/>';
@@ -264,7 +264,7 @@ function generer_svg_cube() {
 }
 
 function generer_svg_pave() {
-    $svg = '<svg width="220" height="180" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 220 180" width="220" height="180" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block; max-width:100%; height:auto;">';
     
     // Faces
     $svg .= '<rect x="40" y="80" width="110" height="70" fill="#e0e0e0" stroke="none"/>';
@@ -289,7 +289,7 @@ function generer_svg_pave() {
 }
 
 function generer_svg_prisme_triangulaire() {
-    $svg = '<svg width="220" height="180" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 220 180" width="220" height="180" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block; max-width:100%; height:auto;">';
     
     // Faces visibles
     $svg .= '<path d="M 60 140 L 100 100 L 140 0 L 100 40 Z" fill="#c8c8c8" stroke="none"/>';
@@ -319,7 +319,7 @@ function generer_svg_prisme_triangulaire() {
 }
 
 function generer_svg_cylindre() {
-    $svg = '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 200 200" width="200" height="200" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block; max-width:100%; height:auto;">';
     
     // 1. Corps
     $svg .= '<rect x="50" y="50" width="100" height="110" fill="#e8e8e8" stroke="none"/>';
@@ -345,7 +345,7 @@ function generer_svg_cylindre() {
 }
 
 function generer_svg_pyramide_carree() {
-    $svg = '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 200 200" width="200" height="200" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block; max-width:100%; height:auto;">';
     
     // Faces
     $svg .= '<path d="M 50 170 L 150 170 L 170 150 L 70 150 Z" fill="#d0d0d0" stroke="none"/>';
@@ -369,7 +369,7 @@ function generer_svg_pyramide_carree() {
 }
 
 function generer_svg_cone() {
-    $svg = '<svg width="200" height="220" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 200 220" width="200" height="220" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block; max-width:100%; height:auto;">';
     
     // 1. Base : remplissage
     $svg .= '<ellipse cx="100" cy="180" rx="60" ry="18" fill="#b8b8b8" stroke="none"/>';
@@ -389,7 +389,7 @@ function generer_svg_cone() {
 }
 
 function generer_svg_pyramide_triangulaire() {
-    $svg = '<svg width="200" height="180" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 200 180" width="200" height="180" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block; max-width:100%; height:auto;">';
     
     // Base triangulaire
     $svg .= '<path d="M 60 150 L 140 150 L 100 120 Z" fill="#d0d0d0" stroke="none"/>';
@@ -412,7 +412,7 @@ function generer_svg_pyramide_triangulaire() {
 }
 
 function generer_svg_prisme_pentagonal() {
-    $svg = '<svg width="260" height="200" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 260 200" width="260" height="200" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block; max-width:100%; height:auto;">';
     
     // FACE AVANT (pentagone grisé)
     $svg .= '<path d="M 45 105 L 115 95 L 135 145 L 100 180 L 40 165 Z" fill="#d0d0d0" stroke="none"/>';

@@ -185,7 +185,7 @@ function generer_calculer_fractions() {
         return [
             'type' => 'calculer_fractions',
             'difficulte_id' => 1.2,
-            'question' => '<p>Compléter avec <strong>&lt;</strong> ou <strong>&gt;</strong> : ' . frac_html($num, $den) . ' ... 1</p>',
+            'question' => '<p>Compléter avec <strong>&lt;</strong> ou <strong>&gt;</strong> :<br>' . frac_html($num, $den) . ' ... 1</p>',
             'reponse' => '<p>' . $reponse_text . '</p>'
         ];
     }

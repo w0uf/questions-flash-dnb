@@ -9,7 +9,7 @@ import random
 import os
 
 # Créer le dossier de sortie
-output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "includes", "qf_thales")
+output_dir = "../includes/qf_thales"
 os.makedirs(output_dir, exist_ok=True)
 
 def generer_configuration_thales():
@@ -94,21 +94,21 @@ def generer_question_thales(num):
     return question, reponse
 
 def generer_fichier_html(num, question, reponse):
-    """Écrit la question et la réponse dans deux fichiers séparés.
+    """Génère un fichier HTML complet pour une question"""
+    
+    html = f"""<!-- Question Thalès #{num} -->
+{question}
 
-    functions/thales.php lit question_XXX.html et reponse_XXX.html : les deux
-    fichiers doivent donc être produits, avec la même numérotation.
-    """
-
-    filename_q = f"{output_dir}/question_{num:03d}.html"
-    with open(filename_q, 'w', encoding='utf-8') as f:
-        f.write(f"<!-- Question Thalès #{num} -->\n{question}\n")
-
-    filename_r = f"{output_dir}/reponse_{num:03d}.html"
-    with open(filename_r, 'w', encoding='utf-8') as f:
-        f.write(f"{reponse}\n")
-
-    return filename_q
+<div style="display:none;" id="answer-inline-{num}">
+    {reponse}
+</div>
+"""
+    
+    filename = f"{output_dir}/question_{num:03d}.html"
+    with open(filename, 'w', encoding='utf-8') as f:
+        f.write(html)
+    
+    return filename
 
 def main():
     """Génère toutes les variantes"""

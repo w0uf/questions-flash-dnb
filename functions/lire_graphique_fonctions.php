@@ -423,7 +423,7 @@ function generer_svg_histogramme($valeurs, $labels, $label_x, $label_y, $y_min, 
     
     $scale_y = $plot_height / ($y_max - $y_min);
     
-    $svg = '<svg width="' . $width . '" height="' . $height . '" style="border: 1px solid #ddd; background: white; margin: 20px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 ' . $width . ' ' . $height . '" width="' . $width . '" height="' . $height . '" style="border: 1px solid #ddd; background: white; margin: 20px auto; display: block; max-width:100%; height:auto;">';
     
     // Grille horizontale
     for ($y = $y_min; $y <= $y_max; $y += $pas_y) {
@@ -490,7 +490,7 @@ function generer_svg_courbe($points, $label_x, $label_y, $x_min, $x_max, $y_min,
     $scale_x = $plot_width / ($x_max - $x_min);
     $scale_y = $plot_height / ($y_max - $y_min);
     
-    $svg = '<svg width="' . $width . '" height="' . $height . '" style="border: 1px solid #ddd; background: white; margin: 20px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 ' . $width . ' ' . $height . '" width="' . $width . '" height="' . $height . '" style="border: 1px solid #ddd; background: white; margin: 20px auto; display: block; max-width:100%; height:auto;">';
     
     // Grille verticale
     for ($x = $x_min; $x <= $x_max; $x += $pas_x) {
@@ -580,7 +580,7 @@ function generer_svg_courbe_y_negatif($points, $label_x, $label_y, $x_min, $x_ma
     $scale_x = $plot_width / ($x_max - $x_min);
     $scale_y = $plot_height / ($y_max - $y_min);
     
-    $svg = '<svg width="' . $width . '" height="' . $height . '" style="border: 1px solid #ddd; background: white; margin: 20px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 ' . $width . ' ' . $height . '" width="' . $width . '" height="' . $height . '" style="border: 1px solid #ddd; background: white; margin: 20px auto; display: block; max-width:100%; height:auto;">';
     
     // Grille verticale
     for ($x = $x_min; $x <= $x_max; $x += $pas_x) {
@@ -673,7 +673,7 @@ function generer_svg_courbe_avec_origine($points, $label_x, $label_y, $x_min, $x
     $scale_x = $plot_width / ($x_max - $x_min);
     $scale_y = $plot_height / ($y_max - $y_min);
     
-    $svg = '<svg width="' . $width . '" height="' . $height . '" style="border: 1px solid #ddd; background: white; margin: 20px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 ' . $width . ' ' . $height . '" width="' . $width . '" height="' . $height . '" style="border: 1px solid #ddd; background: white; margin: 20px auto; display: block; max-width:100%; height:auto;">';
     
     // Grille verticale (plus visible)
     for ($x = $x_min; $x <= $x_max; $x += $pas_x) {

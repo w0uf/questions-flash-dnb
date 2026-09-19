@@ -48,10 +48,12 @@ require_once('functions/algorithmique.php');
 require_once('functions/tables.php');
 require_once('functions/calcul_mental.php');
 require_once('functions/priorites.php');
+require_once('functions/calcul_astucieux.php');
 require_once('functions/puissances.php');
 require_once('functions/programme_calcul.php');
 require_once('functions/etendue.php');
 require_once('functions/grandeurs_composees.php');
+require_once('functions/image_antecedent.php');
 
 $automatismes_list = $_POST['auto'] ?? [];
 
@@ -110,6 +112,8 @@ function generer_question_print($auto) {
         case 'tables':               return generer_tables();
         case 'calcul_mental':        return generer_calcul_mental();
         case 'priorites':            return generer_priorites();
+        case 'calcul_astucieux':     return generer_calcul_astucieux();
+        case 'image_antecedent':     return generer_image_antecedent();
         case 'puissances':           return generer_puissances();
         case 'programme_calcul':     return generer_programme_calcul();
         case 'etendue':              return generer_etendue();
@@ -309,6 +313,9 @@ body {
 }
 .question-content p { margin: 4px 0; }
 .question-content svg { max-width: 100%; height: auto; }
+/* Le repère des questions « image / antécédent » est carré et en viewBox :
+   sans plafond il occuperait toute la largeur de la fiche. */
+.question-content svg.ia-repere { max-width: 300px; display: block; margin: 4px auto; }
 
 /* ── Fractions / angles inline ── */
 .angle { display: inline-block; text-align: center; font-family: monospace; font-size: 117%; line-height: 1; }

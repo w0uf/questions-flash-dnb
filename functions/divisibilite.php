@@ -5,7 +5,15 @@
  * Format : Vrai ou Faux (1 chance sur 2)
  */
 
-function generer_divisibilite() {
+function generer_divisibilite($famille = '') {
+    // Filtre optionnel : ne travailler qu'un critère à la fois. Traité avant le
+    // pool historique, l'appel sans argument (session DNB) est inchangé.
+    if (in_array($famille, ['2', '3', '5', '9'], true)) {
+        $variantes = ['div_par_' . $famille . '_vrai', 'div_par_' . $famille . '_faux',
+                      'div_par_' . $famille . '_vrai_2'];
+        return div_construire($variantes[array_rand($variantes)]);
+    }
+
     // ========================================
     // SYSTÈME DE POOL POUR ÉQUILIBRAGE
     // ========================================
@@ -31,6 +39,12 @@ function generer_divisibilite() {
     
     // Piocher le premier élément du pool
     $type_question = array_shift($_SESSION['divisibilite_pool']);
+
+    return div_construire($type_question);
+}
+
+/** Construit la question d'un sous-type (extrait en août 2026). */
+function div_construire($type_question) {
     
     // ========================================
     // GÉNÉRER LA QUESTION SELON LE TYPE
@@ -228,10 +242,47 @@ function generer_divisibilite() {
             break;
     }
     
+
+    // Justification par le critère (ajoutée en août 2026) : la réponse se
+    // limitait à « Vrai » ou « Faux », ce qui n'apprend rien. On explicite le
+    // critère sur le nombre tiré — c'est lui, l'automatisme à installer.
+    if (preg_match('/div_par_(\d+)_/', $type_question, $m_div) && $nombre > 0) {
+        $reponse_html .= div_justification($nombre, (int)$m_div[1]);
+    }
+
     return [
         'type' => 'divisibilite',
         'difficulte_id' => $difficulte,
         'question' => $question_html,
         'reponse' => $reponse_html
     ];
+}
+
+/**
+ * Rappel du critère de divisibilité, appliqué au nombre proposé.
+ */
+function div_justification($nombre, $diviseur) {
+    $chiffres = str_split((string)$nombre);
+    $somme    = array_sum($chiffres);
+    $unite    = (int)substr((string)$nombre, -1);
+    $style    = '<p style="font-size:0.9em; color:#666;">';
+
+    switch ($diviseur) {
+        case 2:
+            return $style . 'Critère : un nombre est divisible par 2 si son <strong>chiffre des unités</strong> '
+                 . 'est pair. Ici ce chiffre est ' . $unite . ', il est '
+                 . ($unite % 2 === 0 ? 'pair' : 'impair') . '.</p>';
+        case 5:
+            return $style . 'Critère : un nombre est divisible par 5 si son <strong>chiffre des unités</strong> '
+                 . 'est 0 ou 5. Ici ce chiffre est ' . $unite . '.</p>';
+        case 3:
+            return $style . 'Critère : un nombre est divisible par 3 si la <strong>somme de ses chiffres</strong> '
+                 . 'l\'est. Ici ' . implode(' + ', $chiffres) . ' = ' . $somme . ', et ' . $somme
+                 . ($somme % 3 === 0 ? ' est ' : ' n\'est pas ') . 'dans la table de 3.</p>';
+        case 9:
+            return $style . 'Critère : un nombre est divisible par 9 si la <strong>somme de ses chiffres</strong> '
+                 . 'l\'est. Ici ' . implode(' + ', $chiffres) . ' = ' . $somme . ', et ' . $somme
+                 . ($somme % 9 === 0 ? ' est ' : ' n\'est pas ') . 'un multiple de 9.</p>';
+    }
+    return '';
 }

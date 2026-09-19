@@ -3,6 +3,35 @@
 Historique repris de la page en production
 (<https://site2wouf.fr/questions_flash_dnb.php>), dont ce dépôt est l'export.
 
+## 1.3.0 — 19 septembre 2026
+
+- **Nouveaux automatismes** (44 → 46) : « Image et antécédent » (notation f(x), lecture
+  dans un tableau et sur un graphique) et « Calcul astucieux » (regrouper des termes ou
+  des facteurs, développer, factoriser, et les mêmes astuces sur les relatifs, les
+  fractions et les puissances de 10).
+- **Générateurs enrichis** depuis la version 1.2.1, tous au bénéfice de la session et de
+  la fiche imprimable : angles formés par deux parallèles et une sécante (correspondants
+  et alternes-internes, revenus au programme) ; pyramide, cône et boule ajoutés aux
+  volumes ; symétrie d'axe (Oy) et coordonnées de l'image d'un point, qui étaient codées
+  en dur ; six sous-types autour du signe « moins » pour développer et factoriser ;
+  trois sous-types de pourcentages d'évolution (retrouver le taux, remonter à la valeur
+  initiale, deux évolutions successives) ; tables et calcul mental, qui étaient des
+  ébauches, entièrement réécrits ; critères de divisibilité appliqués au nombre plutôt
+  que répondus par vrai ou faux.
+- **Corrections** : deux factorisations incomplètes acceptaient deux réponses justes
+  (`3a² + 3a`, `4b² − 4`) ; la médiane ne tirait jamais d'effectif pair ; l'automatisme
+  « Probabilités » dépendait d'une fonction définie dans un autre fichier et plantait
+  hors session complète ; accords de genre et de nombre dans plusieurs énoncés.
+- **Affichage** : les 100 figures d'aires ont reçu un `viewBox`, sans lequel elles
+  étaient rognées sur téléphone ; le repère des questions « image / antécédent » est
+  plafonné sur la fiche imprimable, où il occupait toute la largeur.
+
+## 1.2.1 — 5 août 2026
+
+- Préparation de l'archivage et de la citation du logiciel : ajout de `CITATION.cff`
+  (auteur, licence, projet), compatible avec la fonction de citation de GitHub et
+  l'intégration Zenodo. Le fonctionnement de l'application est inchangé.
+
 ## 1.2.0 — 12 juillet 2026
 
 - **Nouveaux automatismes** (37 → 44) : puissances et ordre de grandeur, programme de

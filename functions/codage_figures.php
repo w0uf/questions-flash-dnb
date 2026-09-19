@@ -258,7 +258,7 @@ function generer_codage_figures() {
 // ============================================
 
 function generer_svg_triangle_isocele($equilateral = false) {
-    $svg = '<svg width="300" height="280" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0;">';
+    $svg = '<svg viewBox="0 0 300 280" width="300" height="280" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0; max-width:100%; height:auto;">';
     
     if ($equilateral) {
         // Triangle équilatéral (3 côtés égaux)
@@ -301,7 +301,7 @@ function generer_svg_triangle_equilateral() {
 }
 
 function generer_svg_triangle_rectangle() {
-    $svg = '<svg width="300" height="280" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0;">';
+    $svg = '<svg viewBox="0 0 300 280" width="300" height="280" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0; max-width:100%; height:auto;">';
     
     // Triangle rectangle en A
     $ax = 70; $ay = 220;
@@ -324,7 +324,7 @@ function generer_svg_triangle_rectangle() {
 }
 
 function generer_svg_triangle_rectangle_isocele() {
-    $svg = '<svg width="300" height="280" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0;">';
+    $svg = '<svg viewBox="0 0 300 280" width="300" height="280" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0; max-width:100%; height:auto;">';
     
     // Triangle rectangle isocèle en A (AB = AC)
     $ax = 70; $ay = 220;
@@ -351,7 +351,7 @@ function generer_svg_triangle_rectangle_isocele() {
 }
 
 function generer_svg_triangle_angles_egaux() {
-    $svg = '<svg width="300" height="280" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0;">';
+    $svg = '<svg viewBox="0 0 300 280" width="300" height="280" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0; max-width:100%; height:auto;">';
     
     // Triangle isocèle avec 2 angles égaux à la base (en B et C)
     $ax = 150; $ay = 40;
@@ -378,7 +378,7 @@ function generer_svg_triangle_angles_egaux() {
 }
 
 function generer_svg_triangle_3_angles_egaux() {
-    $svg = '<svg width="300" height="280" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0;">';
+    $svg = '<svg viewBox="0 0 300 280" width="300" height="280" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0; max-width:100%; height:auto;">';
     
     // Triangle équilatéral avec 3 angles de 60° codés
     $ax = 150; $ay = 40;
@@ -412,7 +412,7 @@ function generer_svg_triangle_3_angles_egaux() {
 // ============================================
 
 function generer_svg_losange() {
-    $svg = '<svg width="300" height="280" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0;">';
+    $svg = '<svg viewBox="0 0 300 280" width="300" height="280" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0; max-width:100%; height:auto;">';
     
     // Losange
     $ax = 150; $ay = 40;
@@ -439,7 +439,7 @@ function generer_svg_losange() {
 }
 
 function generer_svg_rectangle() {
-    $svg = '<svg width="350" height="250" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0;">';
+    $svg = '<svg viewBox="0 0 350 250" width="350" height="250" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0; max-width:100%; height:auto;">';
     
     // Rectangle
     $ax = 50; $ay = 60;
@@ -469,7 +469,7 @@ function generer_svg_rectangle() {
 }
 
 function generer_svg_carre() {
-    $svg = '<svg width="300" height="300" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0;">';
+    $svg = '<svg viewBox="0 0 300 300" width="300" height="300" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0; max-width:100%; height:auto;">';
     
     // Carré
     $ax = 60; $ay = 60;
@@ -499,7 +499,7 @@ function generer_svg_carre() {
 }
 
 function generer_svg_parallelogramme() {
-    $svg = '<svg width="350" height="250" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0;">';
+    $svg = '<svg viewBox="0 0 350 250" width="350" height="250" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0; max-width:100%; height:auto;">';
     
     // Parallélogramme
     $ax = 60; $ay = 60;
@@ -526,7 +526,7 @@ function generer_svg_parallelogramme() {
 }
 
 function generer_svg_quadrilatere_quelconque() {
-    $svg = '<svg width="350" height="250" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0;">';
+    $svg = '<svg viewBox="0 0 350 250" width="350" height="250" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0; max-width:100%; height:auto;">';
     
     // Quadrilatère quelconque (trapèze irrégulier)
     $ax = 70; $ay = 60;
@@ -549,7 +549,7 @@ function generer_svg_quadrilatere_quelconque() {
 }
 
 function generer_svg_quad_2_angles_droits() {
-    $svg = '<svg width="350" height="250" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0;">';
+    $svg = '<svg viewBox="0 0 350 250" width="350" height="250" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0; max-width:100%; height:auto;">';
     
     // Quadrilatère qui RESSEMBLE à un rectangle mais n'a que 2 angles droits
     // Forme presque rectangulaire mais les angles C et D ne sont pas exactement droits (88° et 92°)
@@ -580,7 +580,7 @@ function generer_svg_quad_2_angles_droits() {
 // ============================================
 
 function generer_svg_mediatrice($perpendiculaire, $milieu) {
-    $svg = '<svg width="400" height="350" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0;">';
+    $svg = '<svg viewBox="0 0 400 350" width="400" height="350" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0; max-width:100%; height:auto;">';
     
     // Segment [AB] HORIZONTAL pour simplifier
     $ax = 80; $ay = 200;
@@ -664,7 +664,7 @@ function generer_svg_mediatrice($perpendiculaire, $milieu) {
 }
 
 function generer_svg_mediatrice_fausse_milieu() {
-    $svg = '<svg width="400" height="350" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0;">';
+    $svg = '<svg viewBox="0 0 400 350" width="400" height="350" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0; max-width:100%; height:auto;">';
     
     // Segment [AB] HORIZONTAL
     $ax = 80; $ay = 200;

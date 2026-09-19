@@ -14,9 +14,8 @@ def run_generator(script_name):
     print(f"🚀 Lancement de {script_name}")
     print(f"{'='*60}\n")
     
-    here = os.path.dirname(os.path.abspath(__file__))
-    result = subprocess.run([sys.executable, os.path.join(here, script_name)],
-                          capture_output=False,
+    result = subprocess.run([sys.executable, script_name], 
+                          capture_output=False, 
                           text=True)
     
     if result.returncode == 0:

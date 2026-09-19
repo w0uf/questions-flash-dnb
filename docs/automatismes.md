@@ -19,6 +19,7 @@ exact est la fonction `generer_question()` de `qf_dnb_session.php`.
 | `tables` | Tables de multiplication | 1,0 |
 | `calcul_mental` | Calcul mental (additions, soustractions) | 1,1 |
 | `priorites` | Priorités opératoires (×, ÷ avant +, −) | 1,4 |
+| `calcul_astucieux` | Calcul astucieux (regrouper, développer, factoriser) | 1,6 |
 | `carres` | Carrés de 1 à 12 | 1,2 |
 | `fractions_decimales` | Fractions simples ⇄ Décimaux (1/2, 1/4, 3/4...) | 1,1 |
 | `comparer_decimaux` | Comparer et calculer avec décimaux (y compris négatifs) | 1,0 |
@@ -74,6 +75,7 @@ exact est la fonction `generer_question()` de `qf_dnb_session.php`.
 | `grandeurs_composees` | Grandeurs composées (vitesse, distance, durée, débit) | 1,9 |
 | `pourcentages_augmentation` | Appliquer augmentation ou diminution en pourcentage | 1,7 |
 | `lire_graphique_fonctions` | Exploiter graphique (lire valeurs sur axes) | 1,5 |
+| `image_antecedent` | Image et antécédent (notation f(x), tableau, graphique) | 1,6 |
 
 ## 💻 Algorithmique et Programmation
 
@@ -81,4 +83,4 @@ exact est la fonction `generer_question()` de `qf_dnb_session.php`.
 | --- | --- | --- |
 | `algorithmique` | Interpréter suite d'instructions (calcul, déplacement, construction) | 1,6 |
 
-**Total : 44 automatismes** répartis en 5 thèmes.
+**Total : 46 automatismes** répartis en 5 thèmes.

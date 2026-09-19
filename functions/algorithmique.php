@@ -15,7 +15,15 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-function generer_suites_instructions() {
+function generer_suites_instructions($famille = '') {
+    // Filtre optionnel de famille pour une page hôte, traité avant le pool
+    // historique : l'appel sans argument (session DNB) est inchangé.
+    switch ($famille) {
+        case 'calcul':       return si_generer_programme_calcul();
+        case 'deplacement':  return si_generer_programme_deplacement();
+        case 'construction': return si_generer_programme_construction();
+    }
+
     // Pool 3 types
     if (!isset($_SESSION['algorithmique_type_pool']) || empty($_SESSION['algorithmique_type_pool'])) {
         $_SESSION['algorithmique_type_pool'] = [
@@ -210,7 +218,7 @@ function si_deplacement_type_a() {
     }
     
     // Générer quadrillage SVG
-    $svg = '<svg width="350" height="350" style="border: 1px solid #ddd; background: white; margin: 20px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 350 350" width="350" height="350" style="border: 1px solid #ddd; background: white; margin: 20px auto; display: block; max-width:100%; height:auto;">';
     
     // Lignes du quadrillage
     for ($i = 0; $i <= 5; $i++) {
@@ -278,7 +286,7 @@ function si_deplacement_type_b() {
     $nb_haut = $arrivee_ligne - $depart_ligne;
     
     // Générer quadrillage
-    $svg = '<svg width="350" height="350" style="border: 1px solid #ddd; background: white; margin: 20px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 350 350" width="350" height="350" style="border: 1px solid #ddd; background: white; margin: 20px auto; display: block; max-width:100%; height:auto;">';
     
     for ($i = 0; $i <= 5; $i++) {
         $pos = 50 + $i * 50;
@@ -439,7 +447,7 @@ function si_generer_scratch_escalier() {
     $hauteur_marche = $variante['hauteur'];
     
     // Générer SVG de l'escalier
-    $svg = '<svg width="350" height="350" style="border: 1px solid #ddd; background: white; margin: 20px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 350 350" width="350" height="350" style="border: 1px solid #ddd; background: white; margin: 20px auto; display: block; max-width:100%; height:auto;">';
     $svg .= '<text x="175" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">Figure à obtenir</text>';
     
     // Dessiner l'escalier
@@ -513,7 +521,7 @@ function si_generer_scratch_maison() {
     $cote = rand(3, 5) * 10; // 30, 40 ou 50 - même longueur pour tout !
     
     // Générer SVG de la maison avec triangle équilatéral
-    $svg = '<svg width="350" height="350" style="border: 1px solid #ddd; background: white; margin: 20px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 350 350" width="350" height="350" style="border: 1px solid #ddd; background: white; margin: 20px auto; display: block; max-width:100%; height:auto;">';
     $svg .= '<text x="175" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">Figure à obtenir</text>';
     
     // Position de départ (coin haut gauche du carré)
@@ -583,7 +591,7 @@ function si_generer_svg_figure_scratch($fig) {
     $cx = $width / 2;
     $cy = $height / 2;
     
-    $svg = '<svg width="' . $width . '" height="' . $height . '" style="border: 1px solid #ddd; background: white; margin: 20px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 ' . $width . ' ' . $height . '" width="' . $width . '" height="' . $height . '" style="border: 1px solid #ddd; background: white; margin: 20px auto; display: block; max-width:100%; height:auto;">';
     
     // Titre
     $svg .= '<text x="' . $cx . '" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">Figure obtenue</text>';

@@ -17,7 +17,7 @@ CONTRAINTES :
 import random
 import os
 
-OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "includes", "qf_aires")
+OUTPUT_DIR = "includes/qf_aires"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 

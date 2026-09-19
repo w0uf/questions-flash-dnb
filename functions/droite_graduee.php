@@ -388,7 +388,7 @@ function generer_svg_droite_fraction($debut, $fin, $subdivision, $point_abscisse
         return $marge + ($abscisse - $debut_graduations) * $echelle;
     };
     
-    $svg = '<svg width="' . $largeur . '" height="' . $hauteur . '" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0;">';
+    $svg = '<svg viewBox="0 0 ' . $largeur . ' ' . $hauteur . '" width="' . $largeur . '" height="' . $hauteur . '" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0; max-width:100%; height:auto;">';
     
     // Ligne principale de la droite (SANS flèches)
     $x_debut = $abscisse_vers_x($debut_graduations);

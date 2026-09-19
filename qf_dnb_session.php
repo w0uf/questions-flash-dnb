@@ -66,10 +66,12 @@ require_once('functions/algorithmique.php');
 require_once('functions/tables.php');
 require_once('functions/calcul_mental.php');
 require_once('functions/priorites.php');
+require_once('functions/calcul_astucieux.php');
 require_once('functions/puissances.php');
 require_once('functions/programme_calcul.php');
 require_once('functions/etendue.php');
 require_once('functions/grandeurs_composees.php');
+require_once('functions/image_antecedent.php');
 
 // ========== INITIALISATION SESSION ==========
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_SESSION['dnb_active'])) {
@@ -96,6 +98,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_SESSION['dnb_active'])) {
     unset($_SESSION['expressions_litterales_pool']);
     unset($_SESSION['operations_n_pool']);
     unset($_SESSION['divisibilite_pool']);
+    unset($_SESSION['calcul_astucieux_pool']);
+    unset($_SESSION['ia_pool']);
+    unset($_SESSION['mediane_effectifs']);
     unset($_SESSION['notation_scientifique_pool']);
     unset($_SESSION['ecritures_multiples_pool']);
     unset($_SESSION['calculer_fractions_pool']);
@@ -222,6 +227,10 @@ function generer_question($auto) {
             return generer_calcul_mental();
         case 'priorites':
             return generer_priorites();
+        case 'calcul_astucieux':
+            return generer_calcul_astucieux();
+        case 'image_antecedent':
+            return generer_image_antecedent();
         case 'puissances':
             return generer_puissances();
         case 'programme_calcul':

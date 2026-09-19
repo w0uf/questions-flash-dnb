@@ -15,6 +15,7 @@ $automatismes_config = [
             'tables' => ['nom' => 'Tables de multiplication', 'ready' => true],
             'calcul_mental' => ['nom' => 'Calcul mental (additions, soustractions)', 'ready' => true],
             'priorites' => ['nom' => 'Priorités opératoires (×, ÷ avant +, −)', 'ready' => true],
+            'calcul_astucieux' => ['nom' => 'Calcul astucieux (regrouper, développer, factoriser)', 'ready' => true],
             'carres' => ['nom' => 'Carrés de 1 à 12', 'ready' => true],
             'fractions_decimales' => ['nom' => 'Fractions simples ⇄ Décimaux (1/2, 1/4, 3/4...)', 'ready' => true],
             'comparer_decimaux' => ['nom' => 'Comparer et calculer avec décimaux (y compris négatifs)', 'ready' => true],
@@ -70,6 +71,7 @@ $automatismes_config = [
             'grandeurs_composees' => ['nom' => 'Grandeurs composées (vitesse, distance, durée, débit)', 'ready' => true],
             'pourcentages_augmentation' => ['nom' => 'Appliquer augmentation ou diminution en pourcentage', 'ready' => true],
             'lire_graphique_fonctions' => ['nom' => 'Exploiter graphique (lire valeurs sur axes)', 'ready' => true],
+            'image_antecedent' => ['nom' => 'Image et antécédent (notation f(x), tableau, graphique)', 'ready' => true],
         ]
     ],
     'algorithmique' => [
@@ -120,6 +122,7 @@ $dnb_difficulte_base = [
     'equations'                    => 1.6,
     'ecritures_multiples'          => 1.6,
     'priorites'                    => 1.4,
+    'calcul_astucieux'             => 1.6,
     'programme_calcul'             => 1.7, // 🆕 (à venir)
     'puissances'                   => 1.7, // 🆕 (à venir)
     'notation_scientifique'        => 1.8,
@@ -149,6 +152,7 @@ $dnb_difficulte_base = [
     // 📊 Proportionnalité et Fonctions
     'reconnaitre_proportionnalite' => 1.4,
     'lire_graphique_fonctions'     => 1.5,
+    'image_antecedent'             => 1.6,
     'procedures_proportionnalite'  => 1.7,
     'pourcentages_augmentation'    => 1.7,
     'grandeurs_composees'          => 1.9, // 🆕 (à venir)

@@ -389,7 +389,7 @@ function generer_svg_repere($x_min, $x_max, $y_min, $y_max, $x_point = null, $y_
         return $hauteur - $marge - ($y - $y_min_grad) * $echelle_y;
     };
     
-    $svg = '<svg width="' . $largeur . '" height="' . $hauteur . '" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0;">';
+    $svg = '<svg viewBox="0 0 ' . $largeur . ' ' . $hauteur . '" width="' . $largeur . '" height="' . $hauteur . '" xmlns="http://www.w3.org/2000/svg" style="margin: 15px 0; max-width:100%; height:auto;">';
     
     // Position de l'origine (0, 0)
     $x_origine = $conv_x(0);

@@ -431,7 +431,7 @@ function generer_cosinus_valeur_cosinus() {
  * SVG triangle rectangle simple
  */
 function generer_svg_triangle_rectangle_simple($label_A, $label_B, $label_C, $position) {
-    $svg = '<svg width="320" height="250" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 320 250" width="320" height="250" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block; max-width:100%; height:auto;">';
     
     if ($position == 0) {
         // A en bas-gauche, B en bas-droite (angle droit), C en haut-droite

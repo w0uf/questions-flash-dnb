@@ -12,7 +12,7 @@ Deux usages à partir d'une même sélection d'automatismes :
   à imprimer ou à enregistrer en PDF depuis le navigateur.
 
 Les questions sont **générées aléatoirement à chaque tirage** : deux élèves n'obtiennent
-pas la même feuille, et un même élève peut s'entraîner indéfiniment. **44 automatismes**
+pas la même feuille, et un même élève peut s'entraîner indéfiniment. **46 automatismes**
 sont disponibles, répartis en 5 thèmes (nombres et calculs, espace et géométrie,
 probabilités et statistiques, proportionnalité et fonctions, algorithmique).
 

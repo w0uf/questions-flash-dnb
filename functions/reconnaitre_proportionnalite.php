@@ -194,7 +194,7 @@ function svg_graphique_droite_origine() {
     $max_x = 8;
     $max_y = 8 * $k;
     
-    $svg = '<svg width="' . $largeur . '" height="' . $hauteur . '" xmlns="http://www.w3.org/2000/svg" style="display: block; margin: 20px auto; border: 1px solid #ccc;">';
+    $svg = '<svg viewBox="0 0 ' . $largeur . ' ' . $hauteur . '" width="' . $largeur . '" height="' . $hauteur . '" xmlns="http://www.w3.org/2000/svg" style="display: block; margin: 20px auto; border: 1px solid #ccc; max-width:100%; height:auto;">';
     
     // Axes
     $svg .= '<line x1="' . $marge . '" y1="' . ($hauteur - $marge) . '" x2="' . ($largeur - $marge) . '" y2="' . ($hauteur - $marge) . '" stroke="#333" stroke-width="2"/>';
@@ -246,7 +246,7 @@ function svg_graphique_droite_decalee() {
     $max_x = 8;
     $max_y = 8 * $k + $b + 2;
     
-    $svg = '<svg width="' . $largeur . '" height="' . $hauteur . '" xmlns="http://www.w3.org/2000/svg" style="display: block; margin: 20px auto; border: 1px solid #ccc;">';
+    $svg = '<svg viewBox="0 0 ' . $largeur . ' ' . $hauteur . '" width="' . $largeur . '" height="' . $hauteur . '" xmlns="http://www.w3.org/2000/svg" style="display: block; margin: 20px auto; border: 1px solid #ccc; max-width:100%; height:auto;">';
     
     // Axes
     $svg .= '<line x1="' . $marge . '" y1="' . ($hauteur - $marge) . '" x2="' . ($largeur - $marge) . '" y2="' . ($hauteur - $marge) . '" stroke="#333" stroke-width="2"/>';
@@ -301,7 +301,7 @@ function svg_graphique_parabole() {
     $max_x = 5;
     $max_y = 20 * $a;
     
-    $svg = '<svg width="' . $largeur . '" height="' . $hauteur . '" xmlns="http://www.w3.org/2000/svg" style="display: block; margin: 20px auto; border: 1px solid #ccc;">';
+    $svg = '<svg viewBox="0 0 ' . $largeur . ' ' . $hauteur . '" width="' . $largeur . '" height="' . $hauteur . '" xmlns="http://www.w3.org/2000/svg" style="display: block; margin: 20px auto; border: 1px solid #ccc; max-width:100%; height:auto;">';
     
     // Axes
     $svg .= '<line x1="' . $marge . '" y1="' . ($hauteur - $marge) . '" x2="' . ($largeur - $marge) . '" y2="' . ($hauteur - $marge) . '" stroke="#333" stroke-width="2"/>';

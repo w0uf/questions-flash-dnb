@@ -4,7 +4,22 @@
  * SANS QCM - Réponse directe en fraction irréductible ou décimale
  */
 
-function generer_probabilites() {
+require_once __DIR__ . '/utils.php';   // fraction() — dépendance explicite
+
+function generer_probabilites($famille = '') {
+    // Filtre optionnel de famille, traité avant le pool historique : l'appel
+    // sans argument (session DNB) est inchangé.
+    $par_famille = [
+        'de'      => ['de_issue', 'de_evenement'],
+        'sac'     => ['sac_boules'],
+        'roue'    => ['roue_secteurs'],
+        'lettres' => ['lettres_mot', 'lettres_deux_mots'],
+    ];
+    if (isset($par_famille[$famille])) {
+        $liste = $par_famille[$famille];
+        return proba_construire($liste[array_rand($liste)]);
+    }
+
     if (!isset($_SESSION['probabilites_pool']) || empty($_SESSION['probabilites_pool'])) {
         $_SESSION['probabilites_pool'] = [
             'de_issue', 'de_issue',
@@ -18,7 +33,12 @@ function generer_probabilites() {
     }
     
     $type = array_shift($_SESSION['probabilites_pool']);
-    
+
+    return proba_construire($type);
+}
+
+/** Aiguillage d'un sous-type vers son générateur (extrait en août 2026). */
+function proba_construire($type) {
     switch ($type) {
         case 'de_issue': return generer_proba_de_issue();
         case 'de_evenement': return generer_proba_de_evenement();
@@ -127,10 +147,11 @@ function generer_proba_sac() {
     $q = '<p>Un sac contient ';
     $parts = [];
     foreach ($config as $c => $n) {
-        $parts[] = $n . ' boule' . ($n>1?'s':'') . ' ' . $c . ($n>1?'s':'');
+        $parts[] = $n . ' boule' . ($n > 1 ? 's' : '') . ' ' . proba_couleur_accordee($c, $n);
     }
     $q .= implode(', ', $parts) . '.</p>';
-    $q .= '<p><strong>On tire une boule au hasard. Quelle est la probabilité de tirer une boule ' . $cible . ' ?</strong></p>';
+    $q .= '<p><strong>On tire une boule au hasard. Quelle est la probabilité de tirer une boule '
+        . proba_couleur_accordee($cible, 1) . ' ?</strong></p>';
     
     // Simplifier
     $pgcd = gcd($nb, $total);
@@ -294,7 +315,7 @@ function calculer_proba_lettres($mot1, $mot2) {
 }
 
 function generer_svg_roue($total, $r, $b, $v, $cible) {
-    $svg = '<svg width="350" height="350" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 350 350" width="350" height="350" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block; max-width:100%; height:auto;">';
     
     $cx = 175; $cy = 175; $rayon = 120;
     $cols = ['rouge' => '#ff0000', 'bleu' => '#0066cc', 'vert' => '#00aa00'];
@@ -341,4 +362,23 @@ function generer_svg_roue($total, $r, $b, $v, $cible) {
 function gcd($a, $b) {
     return $b ? gcd($b, $a % $b) : $a;
 }
+
+/**
+ * Accord d'un adjectif de couleur avec « boule », nom féminin.
+ * La version d'origine ajoutait le « s » du pluriel mais jamais le « e » du
+ * féminin : elle écrivait « 5 boules bleus » et « une boule bleu ».
+ */
+function proba_couleur_accordee($couleur, $n) {
+    $feminin = [
+        'rouge' => 'rouge',   'jaune' => 'jaune',   'orange' => 'orange',
+        'bleu'  => 'bleue',   'vert'  => 'verte',   'noir'   => 'noire',
+        'blanc' => 'blanche', 'gris'  => 'grise',   'violet' => 'violette',
+    ];
+    $mot = $feminin[$couleur] ?? $couleur;
+    if ($n > 1 && substr($mot, -1) !== 's') {
+        $mot .= 's';
+    }
+    return $mot;
+}
+
 ?>

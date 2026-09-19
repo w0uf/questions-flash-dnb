@@ -9,7 +9,7 @@ import math
 import os
 
 # Créer le dossier de sortie
-output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "includes", "qf_pythagore")
+output_dir = "../includes/qf_pythagore"
 os.makedirs(output_dir, exist_ok=True)
 
 def generer_svg_triangle_rectangle(cote1, cote2, hypotenuse, labels, chercher):

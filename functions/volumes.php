@@ -11,18 +11,44 @@
  * - Prisme pentagonal : V = Aire_base × h (10%)
  */
 
-function generer_volumes() {
+function generer_volumes($famille = '') {
+    // Filtre optionnel : permet à une page hôte de ne travailler qu'une famille
+    // de solides. Sans argument, le comportement historique (tirage sur tout le
+    // catalogue avec anti-doublon) est inchangé — la session DNB n'est pas touchée.
+    $par_famille = [
+        'droits'  => [1, 2, 3, 4, 5],   // cube, pavé, prisme, cylindre, prisme pentagonal
+        'pointus' => [6, 7, 8],         // pyramide, cône, boule
+    ];
+    if (isset($par_famille[$famille])) {
+        $types = $par_famille[$famille];
+        $type_solide = $types[array_rand($types)];
+        $niveau = rand(1, 2);
+        switch ($type_solide) {
+            case 1: return generer_volume_cube($niveau);
+            case 2: return generer_volume_pave($niveau);
+            case 3: return generer_volume_prisme($niveau);
+            case 4: return generer_volume_cylindre($niveau);
+            case 5: return generer_volume_prisme_pentagonal($niveau);
+            case 6: return generer_volume_pyramide($niveau);
+            case 7: return generer_volume_cone($niveau);
+            case 8: return generer_volume_boule($niveau);
+        }
+    }
+
     // Anti-doublon : tracker les combinaisons utilisées
     if (!isset($_SESSION['dnb_volumes_used'])) {
         $_SESSION['dnb_volumes_used'] = [];
     }
-    
+
     // Définir toutes les combinaisons possibles
     // Format : [type_solide, niveau_difficulte]
-    // type_solide : 1=cube, 2=pavé, 3=prisme triangulaire, 4=cylindre, 5=prisme pentagonal
+    // type_solide : 1=cube, 2=pavé, 3=prisme triangulaire, 4=cylindre, 5=prisme pentagonal,
+    //               6=pyramide à base carrée, 7=cône, 8=boule  (6 à 8 ajoutés en août 2026 :
+    //               les solides « pointus » et la boule sont au programme de 3e et tombent
+    //               régulièrement au DNB, ils manquaient totalement ici)
     // niveau_difficulte : 1=facile (petits nombres entiers), 2=moyen (grands nombres ou décimaux)
     $all_combinations = [];
-    for ($type = 1; $type <= 5; $type++) {
+    for ($type = 1; $type <= 8; $type++) {
         for ($niveau = 1; $niveau <= 2; $niveau++) {
             $all_combinations[] = [$type, $niveau];
         }
@@ -59,7 +85,119 @@ function generer_volumes() {
             return generer_volume_cylindre($niveau);
         case 5:
             return generer_volume_prisme_pentagonal($niveau);
+        case 6:
+            return generer_volume_pyramide($niveau);
+        case 7:
+            return generer_volume_cone($niveau);
+        case 8:
+            return generer_volume_boule($niveau);
     }
+}
+
+/**
+ * Pyramide à base carrée : V = (c² × h) ÷ 3
+ * La hauteur est choisie multiple de 3 pour que le volume tombe juste.
+ */
+function generer_volume_pyramide($niveau) {
+    if ($niveau == 1) {
+        $cote = rand(3, 6);
+        $hauteur = 3 * rand(2, 4);          // 6, 9 ou 12
+        $difficulte_id = 2.3;
+    } else {
+        $cote = rand(6, 12);
+        $hauteur = 3 * rand(3, 6);          // 9 à 18
+        $difficulte_id = 2.7;
+    }
+
+    $aire_base = $cote * $cote;
+    $volume = $aire_base * $hauteur / 3;
+
+    $question = '<div style="text-align: center;">'
+              . generer_svg_pyramide_avec_cotes($cote, $hauteur)
+              . '<p style="margin-top: 20px;">Cette pyramide a une <strong>base carrée</strong>.<br>'
+              . 'Quel est son <strong>volume</strong>, <strong>en cm³</strong> ?</p>'
+              . '</div>';
+
+    $reponse = '<p>Aire de la base : ' . $cote . ' × ' . $cote . ' = ' . $aire_base . ' cm²</p>'
+             . '<p>V = (aire de la base × hauteur) ÷ 3 = (' . $aire_base . ' × ' . $hauteur . ') ÷ 3 '
+             . '= ' . ($aire_base * $hauteur) . ' ÷ 3 = <strong>' . $volume . ' cm³</strong></p>'
+             . '<p style="font-size: 0.9em; color: #666;">⚠️ Ne pas oublier le ÷ 3 : une pyramide occupe '
+             . 'le tiers du prisme de même base et de même hauteur.</p>';
+
+    return [
+        'type' => 'volumes',
+        'difficulte_id' => $difficulte_id,
+        'question' => $question,
+        'reponse' => $reponse
+    ];
+}
+
+/**
+ * Cône de révolution : V = (π × r² × h) ÷ 3, en valeur exacte avec π
+ * (même convention que le cylindre : aucun arrondi).
+ */
+function generer_volume_cone($niveau) {
+    if ($niveau == 1) {
+        $rayon = rand(2, 5);
+        $hauteur = 3 * rand(2, 4);
+        $difficulte_id = 2.5;
+    } else {
+        $rayon = rand(5, 9);
+        $hauteur = 3 * rand(3, 5);
+        $difficulte_id = 2.9;
+    }
+
+    $rayon_carre = $rayon * $rayon;
+    $coefficient = $rayon_carre * $hauteur / 3;
+    $formule_exacte = ($coefficient == 1) ? 'π' : $coefficient . 'π';
+
+    $question = '<div style="text-align: center;">'
+              . generer_svg_cone_avec_cotes($rayon, $hauteur)
+              . '<p style="margin-top: 20px;">Quel est le <strong>volume</strong> de ce cône ?</p>'
+              . '<p style="font-size: 0.9em; color: #666; margin-top: 5px;">(Donner la valeur exacte avec π)</p>'
+              . '</div>';
+
+    $reponse = '<p>Le volume du cône est : <strong>' . $formule_exacte . ' cm³</strong></p>'
+             . '<p style="font-size: 0.9em; color: #666;">Calcul : (π × ' . $rayon . '² × ' . $hauteur . ') ÷ 3 '
+             . '= (π × ' . $rayon_carre . ' × ' . $hauteur . ') ÷ 3 = ' . $formule_exacte . ' cm³</p>';
+
+    return [
+        'type' => 'volumes',
+        'difficulte_id' => $difficulte_id,
+        'question' => $question,
+        'reponse' => $reponse
+    ];
+}
+
+/**
+ * Boule : V = (4 × π × r³) ÷ 3, en valeur exacte avec π.
+ * Rayon multiple de 3 pour que 4r³/3 soit entier.
+ */
+function generer_volume_boule($niveau) {
+    $rayon = ($niveau == 1) ? 3 : 6;
+    $difficulte_id = ($niveau == 1) ? 2.6 : 3.0;
+
+    $r_cube = $rayon * $rayon * $rayon;
+    $coefficient = 4 * $r_cube / 3;
+
+    $question = '<div style="text-align: center;">'
+              . generer_svg_boule_avec_cote($rayon)
+              . '<p style="margin-top: 20px;">Quel est le <strong>volume</strong> de cette boule ?</p>'
+              . '<p style="font-size: 0.9em; color: #666; margin-top: 5px;">(Donner la valeur exacte avec π)</p>'
+              . '</div>';
+
+    $reponse = '<p>Le volume de la boule est : <strong>' . $coefficient . 'π cm³</strong></p>'
+             . '<p style="font-size: 0.9em; color: #666;">Calcul : (4 × π × ' . $rayon . '³) ÷ 3 '
+             . '= (4 × π × ' . $r_cube . ') ÷ 3 = ' . $coefficient . 'π cm³</p>'
+             . '<p style="font-size: 0.9em; color: #666;">La formule V = 4πr³ ÷ 3 est donnée au brevet : '
+             . 'ce qui compte est de l\'appliquer avec r, et non avec le diamètre.</p>';
+
+    return [
+        'type' => 'volumes',
+        'difficulte_id' => $difficulte_id,
+        'question' => $question,
+        'reponse' => $reponse
+    ];
 }
 
 /**
@@ -237,7 +375,7 @@ function generer_volume_cylindre($niveau) {
 // ============================================
 
 function generer_svg_cube_avec_cote($arete) {
-    $svg = '<svg width="380" height="350" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 380 350" width="380" height="350" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block; max-width:100%; height:auto;">';
     
     // Cube en projection - sans remplissage, juste les arêtes
     // Face avant : carré de (70, 180) à (190, 300)
@@ -282,7 +420,7 @@ function generer_svg_cube_avec_cote($arete) {
 }
 
 function generer_svg_pave_avec_cotes($longueur, $largeur, $hauteur) {
-    $svg = '<svg width="450" height="380" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 450 380" width="450" height="380" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block; max-width:100%; height:auto;">';
     
     // Pavé en projection - sans remplissage, juste les arêtes
     // Face avant : rectangle de (100, 150) largeur=160, hauteur=120
@@ -344,7 +482,7 @@ function generer_svg_pave_avec_cotes($longueur, $largeur, $hauteur) {
 }
 
 function generer_svg_prisme_avec_cotes($base, $hauteur_triangle, $profondeur) {
-    $svg = '<svg width="400" height="350" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 400 350" width="400" height="350" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block; max-width:100%; height:auto;">';
     
     // TRIANGLE AVANT (face avant du prisme) - trait noir simple
     // Base horizontale en bas : de (60, 260) à (200, 260)
@@ -414,7 +552,7 @@ function generer_svg_prisme_avec_cotes($base, $hauteur_triangle, $profondeur) {
 }
 
 function generer_svg_cylindre_avec_cotes($rayon, $hauteur) {
-    $svg = '<svg width="300" height="280" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 300 280" width="300" height="280" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block; max-width:100%; height:auto;">';
     
     // Corps
     $svg .= '<rect x="100" y="80" width="100" height="140" fill="#e8e8e8" stroke="none"/>';
@@ -489,7 +627,7 @@ function generer_volume_prisme_pentagonal($niveau) {
 }
 
 function generer_svg_prisme_pentagonal_avec_cotes($aire_base, $hauteur) {
-    $svg = '<svg width="450" height="320" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block;">';
+    $svg = '<svg viewBox="0 0 450 320" width="450" height="320" xmlns="http://www.w3.org/2000/svg" style="margin: 15px auto; display: block; max-width:100%; height:auto;">';
     
     // FACE AVANT (pentagone grisé) - décalé à droite pour laisser place à la cotation
     $svg .= '<path d="M 125 165 L 205 155 L 230 210 L 190 250 L 115 233 Z" fill="#e8e8e8" stroke="none"/>';
@@ -536,6 +674,113 @@ function generer_svg_prisme_pentagonal_avec_cotes($aire_base, $hauteur) {
     // Texte (décalé de 50px vers la gauche)
     $svg .= '<text x="65" y="125" font-size="17" fill="#000" font-weight="bold">' . $hauteur . ' cm</text>';
     
+    $svg .= '</svg>';
+    return $svg;
+}
+
+// ============================================
+// FIGURES DES SOLIDES « POINTUS » ET DE LA BOULE
+// Ajoutées en août 2026, en viewBox : contrairement aux figures ci-dessus,
+// elles se mettent à l'échelle sur téléphone au lieu d'être rognées.
+// ============================================
+
+/** Pyramide à base carrée, arêtes cachées en pointillés, cotée c et h. */
+function generer_svg_pyramide_avec_cotes($cote, $hauteur) {
+    // Base ABCD en perspective cavalière : A avant-gauche, B avant-droit,
+    // C arrière-droit, D arrière-gauche (D est le sommet caché).
+    $Ax = 80;  $Ay = 300;
+    $Bx = 240; $By = 300;
+    $Cx = 310; $Cy = 240;
+    $Dx = 150; $Dy = 240;
+    $Sx = 195; $Sy = 80;    // sommet
+    $centre_x = 195; $centre_y = 270;
+
+    $svg = '<svg viewBox="0 0 420 370" width="420" height="370" xmlns="http://www.w3.org/2000/svg" '
+         . 'style="margin:15px auto; display:block; max-width:100%; height:auto;">';
+
+    // Arêtes cachées (celles qui partent de D)
+    $svg .= '<line x1="' . $Ax . '" y1="' . $Ay . '" x2="' . $Dx . '" y2="' . $Dy . '" stroke="#666" stroke-width="2" stroke-dasharray="5,5"/>';
+    $svg .= '<line x1="' . $Dx . '" y1="' . $Dy . '" x2="' . $Cx . '" y2="' . $Cy . '" stroke="#666" stroke-width="2" stroke-dasharray="5,5"/>';
+    $svg .= '<line x1="' . $Sx . '" y1="' . $Sy . '" x2="' . $Dx . '" y2="' . $Dy . '" stroke="#666" stroke-width="2" stroke-dasharray="5,5"/>';
+
+    // Hauteur (pointillés bleus, du sommet au centre de la base)
+    $svg .= '<line x1="' . $Sx . '" y1="' . $Sy . '" x2="' . $centre_x . '" y2="' . $centre_y . '" stroke="#2f7ed8" stroke-width="2" stroke-dasharray="6,4"/>';
+    // Petit carré d'angle droit à la base de la hauteur
+    $svg .= '<polyline points="' . ($centre_x) . ',' . ($centre_y - 14) . ' ' . ($centre_x + 14) . ',' . ($centre_y - 14) . ' ' . ($centre_x + 14) . ',' . $centre_y . '" fill="none" stroke="#2f7ed8" stroke-width="1.5"/>';
+    $svg .= '<text x="' . ($Sx + 10) . '" y="' . (($Sy + $centre_y) / 2) . '" font-size="17" fill="#2f7ed8" font-weight="bold">' . $hauteur . ' cm</text>';
+
+    // Arêtes visibles
+    $svg .= '<line x1="' . $Ax . '" y1="' . $Ay . '" x2="' . $Bx . '" y2="' . $By . '" stroke="#000" stroke-width="2.5"/>';
+    $svg .= '<line x1="' . $Bx . '" y1="' . $By . '" x2="' . $Cx . '" y2="' . $Cy . '" stroke="#000" stroke-width="2.5"/>';
+    $svg .= '<line x1="' . $Sx . '" y1="' . $Sy . '" x2="' . $Ax . '" y2="' . $Ay . '" stroke="#000" stroke-width="2.5"/>';
+    $svg .= '<line x1="' . $Sx . '" y1="' . $Sy . '" x2="' . $Bx . '" y2="' . $By . '" stroke="#000" stroke-width="2.5"/>';
+    $svg .= '<line x1="' . $Sx . '" y1="' . $Sy . '" x2="' . $Cx . '" y2="' . $Cy . '" stroke="#000" stroke-width="2.5"/>';
+
+    // Cotation de l'arête de base avant
+    $svg .= '<line x1="' . $Ax . '" y1="330" x2="' . $Bx . '" y2="330" stroke="#000" stroke-width="1.5"/>';
+    $svg .= '<polygon points="' . $Ax . ',330 ' . ($Ax + 6) . ',327 ' . ($Ax + 6) . ',333" fill="#000"/>';
+    $svg .= '<polygon points="' . $Bx . ',330 ' . ($Bx - 6) . ',327 ' . ($Bx - 6) . ',333" fill="#000"/>';
+    $svg .= '<line x1="' . $Ax . '" y1="' . $Ay . '" x2="' . $Ax . '" y2="335" stroke="#000" stroke-width="1"/>';
+    $svg .= '<line x1="' . $Bx . '" y1="' . $By . '" x2="' . $Bx . '" y2="335" stroke="#000" stroke-width="1"/>';
+    $svg .= '<text x="' . (($Ax + $Bx) / 2) . '" y="352" font-size="17" fill="#000" font-weight="bold" text-anchor="middle">' . $cote . ' cm</text>';
+
+    $svg .= '</svg>';
+    return $svg;
+}
+
+/** Cône de révolution : base en ellipse (arrière en pointillés), coté r et h. */
+function generer_svg_cone_avec_cotes($rayon, $hauteur) {
+    $cx = 195; $cy = 290;       // centre de la base
+    $rx = 95;  $ry = 30;        // demi-axes de l'ellipse
+    $sx = 195; $sy = 75;        // sommet
+
+    $svg = '<svg viewBox="0 0 420 370" width="420" height="370" xmlns="http://www.w3.org/2000/svg" '
+         . 'style="margin:15px auto; display:block; max-width:100%; height:auto;">';
+
+    // Demi-ellipse arrière (cachée)
+    $svg .= '<path d="M ' . ($cx - $rx) . ' ' . $cy . ' A ' . $rx . ' ' . $ry . ' 0 0 1 ' . ($cx + $rx) . ' ' . $cy
+          . '" fill="none" stroke="#666" stroke-width="2" stroke-dasharray="5,5"/>';
+
+    // Hauteur
+    $svg .= '<line x1="' . $sx . '" y1="' . $sy . '" x2="' . $cx . '" y2="' . $cy . '" stroke="#2f7ed8" stroke-width="2" stroke-dasharray="6,4"/>';
+    $svg .= '<polyline points="' . $cx . ',' . ($cy - 14) . ' ' . ($cx + 14) . ',' . ($cy - 14) . ' ' . ($cx + 14) . ',' . $cy . '" fill="none" stroke="#2f7ed8" stroke-width="1.5"/>';
+    $svg .= '<text x="' . ($sx + 10) . '" y="' . (($sy + $cy) / 2) . '" font-size="17" fill="#2f7ed8" font-weight="bold">' . $hauteur . ' cm</text>';
+
+    // Rayon
+    $svg .= '<line x1="' . $cx . '" y1="' . $cy . '" x2="' . ($cx + $rx) . '" y2="' . $cy . '" stroke="#c0392b" stroke-width="2"/>';
+    $svg .= '<polygon points="' . ($cx + $rx) . ',' . $cy . ' ' . ($cx + $rx - 8) . ',' . ($cy - 4) . ' ' . ($cx + $rx - 8) . ',' . ($cy + 4) . '" fill="#c0392b"/>';
+    $svg .= '<text x="' . ($cx + $rx / 2) . '" y="' . ($cy + 22) . '" font-size="17" fill="#c0392b" font-weight="bold" text-anchor="middle">' . $rayon . ' cm</text>';
+
+    // Demi-ellipse avant (visible) + génératrices
+    $svg .= '<path d="M ' . ($cx - $rx) . ' ' . $cy . ' A ' . $rx . ' ' . $ry . ' 0 0 0 ' . ($cx + $rx) . ' ' . $cy
+          . '" fill="none" stroke="#000" stroke-width="2.5"/>';
+    $svg .= '<line x1="' . $sx . '" y1="' . $sy . '" x2="' . ($cx - $rx) . '" y2="' . $cy . '" stroke="#000" stroke-width="2.5"/>';
+    $svg .= '<line x1="' . $sx . '" y1="' . $sy . '" x2="' . ($cx + $rx) . '" y2="' . $cy . '" stroke="#000" stroke-width="2.5"/>';
+
+    $svg .= '</svg>';
+    return $svg;
+}
+
+/** Boule : cercle + équateur en perspective, rayon coté. */
+function generer_svg_boule_avec_cote($rayon) {
+    $cx = 195; $cy = 185; $r = 110;
+
+    $svg = '<svg viewBox="0 0 420 370" width="420" height="370" xmlns="http://www.w3.org/2000/svg" '
+         . 'style="margin:15px auto; display:block; max-width:100%; height:auto;">';
+
+    $svg .= '<circle cx="' . $cx . '" cy="' . $cy . '" r="' . $r . '" fill="none" stroke="#000" stroke-width="2.5"/>';
+    // Équateur : moitié arrière en pointillés, moitié avant pleine
+    $svg .= '<path d="M ' . ($cx - $r) . ' ' . $cy . ' A ' . $r . ' 32 0 0 1 ' . ($cx + $r) . ' ' . $cy
+          . '" fill="none" stroke="#666" stroke-width="1.8" stroke-dasharray="5,5"/>';
+    $svg .= '<path d="M ' . ($cx - $r) . ' ' . $cy . ' A ' . $r . ' 32 0 0 0 ' . ($cx + $r) . ' ' . $cy
+          . '" fill="none" stroke="#666" stroke-width="1.8"/>';
+
+    // Rayon coté, du centre vers la droite
+    $svg .= '<circle cx="' . $cx . '" cy="' . $cy . '" r="3.5" fill="#c0392b"/>';
+    $svg .= '<line x1="' . $cx . '" y1="' . $cy . '" x2="' . ($cx + $r) . '" y2="' . $cy . '" stroke="#c0392b" stroke-width="2"/>';
+    $svg .= '<polygon points="' . ($cx + $r) . ',' . $cy . ' ' . ($cx + $r - 8) . ',' . ($cy - 4) . ' ' . ($cx + $r - 8) . ',' . ($cy + 4) . '" fill="#c0392b"/>';
+    $svg .= '<text x="' . ($cx + $r / 2) . '" y="' . ($cy - 10) . '" font-size="17" fill="#c0392b" font-weight="bold" text-anchor="middle">' . $rayon . ' cm</text>';
+
     $svg .= '</svg>';
     return $svg;
 }
